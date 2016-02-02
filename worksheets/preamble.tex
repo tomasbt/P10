@@ -1,0 +1,101 @@
+\documentclass[11pt,twoside,openright]{report}
+\usepackage{a4}
+\setlength{\parindent}{0in} % fjerner indents
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{array}
+
+\usepackage{float}
+\usepackage{appendix}
+
+\usepackage{graphicx}
+
+\usepackage{vmargin}
+\setmargrb{2.75cm}{1.75cm}{2.25cm}{2.25cm} % final print
+%\setmargrb{2.75cm}{1.75cm}{3.25cm}{2.25cm} % todo print
+
+
+\usepackage{hyperref}
+\hypersetup{
+	pdfborder = {0 0 0}
+}
+
+\usepackage[%
+	per-mode = symbol,
+	exponent-product = \cdot,
+	complex-root-position = before-number,
+	output-complex-root = \text{j},
+	group-digits = true,
+	binary-units = true
+]{siunitx}
+
+
+\usepackage{enumitem}
+
+% Til kode eksempler:
+\usepackage{color}
+\usepackage{listings}
+
+\usepackage{setspace}
+
+\def\lstlistingname{Code snippet}           % Definerer hvad der står foran et stykke kodes caption
+\lstset{
+	basicstyle=\footnotesize\ttfamily,    % Lille skrifttype
+	keywordstyle=\color{blue}\bfseries,   % Keywords blå og bold
+	commentstyle=\color[RGB]{34,139,34},  % Default comments mørkegrøn
+	showstringspaces=false,               % Ingen symbol for mellemrum i strings
+	numbers=left,                         % Linjenumre til venstre
+	numberstyle=\tiny\color{darkgray},    % Små tal på linjenumre med farve skrift
+	numbersep=5pt,                        % Afstand fra linjenummer og ind til kode
+	backgroundcolor=\color{codesnippetbg},% Bg farve
+	tabsize=2,                            % Indenteringer = 4 spaces
+	columns=fixed,                   	  % Kan give problemer med bredde på bogstaver men skulle ikke da vi bruger ttfamily
+	breaklines=true,                      % Deler en for lang linje over to linjer
+	frame=tb,                		      % Styrer hvor streger skal placeres
+	captionpos=t,                         % Caption til kode under og over kodeeksemplet
+	rulecolor=\color{black},			  % Farven på frame
+	escapeinside={(*@}{@*)},              % Giver mulighed for at lave en (*@\label{label}@*), på en kodelinje, så man kan referere til linjen
+    literate={~}{$\sim$}1 {^}{$\wedge$}1,
+}
+
+\lstdefinelanguage{vhdl} {              % Definition af VHDL-language
+  classoffset=4,
+  morekeywords={package,library,use,all,entity,generic,map,architecture,of,is,downto,others,then,if,port,signal,
+    elsif,else,when,for,loop,to,while,end,process,begin,or,and,not,xor,\&,constant,wait,for,nor,nand,in,out,type,
+    array,range,with,select,case},
+  keywordstyle=\color[RGB]{255,0,0},
+  classoffset=3,
+  morekeywords={std_logic,std_logic_vector,to_integer,unsigned,signed,integer,time,natural,shift\_left,
+    shift\_right,resize},
+  keywordstyle=\color[RGB]{0,145,185},
+  classoffset=2,
+  morekeywords={=, <, >, +, -, *, /, .,<=,=>},
+  keywordstyle=\color[RGB]{0,0,255},
+  classoffset=1,
+  sensitive=false,
+  morecomment=[l]{--},
+  stringstyle=\color[RGB]{0,145,185},
+  morestring=[b]",
+  commentstyle=\color[RGB]{0,128,0},
+  alsoletter={=, <, >, +, -, *, /, .,<=,=>}
+}
+
+% define colors
+\definecolor{codesnippetbg}{RGB}{250,250,250}
+\definecolor{darkgray}{RGB}{40,40,40}
+
+\usepackage{booktabs}
+
+\usepackage[table]{xcolor}
+
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+
+\usepackage{subcaption}
+
+
+\usepackage[final]{pdfpages}
