@@ -1,0 +1,59 @@
+\chapter{Stereo vision}
+\section{Occlusions}
+Examples of occlusions:\\~\\
+
+Implicit detection is when occlusions are handled while matching. Explicit detection is when the occlusions are detected by matching both ways. Currently the algorithm use explicit matching.  \\
+
+Types of occlusions:
+\begin{itemize}
+  \item Border occlusions
+  \item Non-border occlusions
+  \begin{itemize}
+    \item Partial occlusion
+    \item Self occlusion
+    \item Total occlusion
+  \end{itemize}
+\end{itemize}
+
+\subsection{Article: Occlusion filling in stereo: Theory and experiments}
+\textbf{Math:}
+\begin{itemize}
+  \item $p_L$: occluded point
+  \item $q_L$: neighboring points
+  \item $l_{P_L}(q_L)$: disparity of $q_L$
+  \item $\hat{l_{P_L}(p_L)}$: disparity of occluded found by interpolation
+  \item $w_{q_L}$: the likelihood of $p_L$ with $q_L$
+  \item $i(p_L)$: intensity of $p_L$  
+  \item $\bar{I}(p_L)$: mean intensity of $p_L$
+  \item $\mu _L$: decay rate
+  \item $F$ is the matrix of coordinates of all the control points 
+  \item $L$ is the vector of their corresponding labels.  
+  \item $w$ is the weight vector
+  \item $F_w = diag(w)F$
+  \item $L_w = diag(w)L$ 
+  \item $P$ is the parameter vector $P = [a\quad b\quad c]'$
+  \item $E(p_L)$ the diffusion energy
+  \item $\mathcal{N}(p_L)$: set of non-occluded neighbors of $p_L$ 
+  \item $l_{p_{Lf}}$ disparity of the horizontal closest non-occluded point to the right of $p_L$. Expected to be part of foreground, f for foreground
+  \item $l_{p_{Lb}}$: disparity of the horizontal closest non-occluded point to the left of $p_L$. Expected to be part of background, b for background
+  \item $\Delta I$: absolute difference
+  \item $\mu ^{-1}$: variance of $\Delta I $
+  \item $\zeta$: Normalizing factor
+  \item $\alpha$: exponential distribution
+  \item $P(\Delta I)$: mixture probability model
+  \item $H(p_L,q_L)$: Homogeneity
+  \item $\psi$: cut-off function
+  \item $D(p_L,\mathcal{N}_i(p_L))$: average truncated color distance
+  \item $S_0$ background surface 
+\end{itemize}
+
+\subsection{Methods}
+\subsubsection{Neighbor's Disparity Assignment : NDA}
+
+\subsubsection{Diffusion in Intensity Space : DIS}
+
+
+\subsubsection{Weighted Least Squares : WLS}
+
+ 
+\subsubsection{Segmentation-based Least Squares : SLS}
