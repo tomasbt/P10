@@ -4,6 +4,7 @@
 import numpy as np
 import re
 from matplotlib import pyplot as plt
+import time
 
 # Read PGM ---------------------------------------------------------------------
 def read_pgm(filename, byteorder='>'):
@@ -102,11 +103,23 @@ def permeR(img,x,y,sigma=0.5):
     '''
     return np.exp(-np.abs(int(img[y][x])-int(img[y][x+1]))/sigma)
 
-def permeR(img,x,y,sigma=0.5):
+def permeL(img,x,y,sigma=0.5):
     '''
     this function calculates permeability weight in right direction
     '''
     return np.exp(-np.abs(int(img[y][x])-int(img[y][x-1]))/sigma)
+    
+def permeU(img,x,y,sigma=0.5):
+    '''
+    this function calculates permeability weight in right direction
+    '''
+    return np.exp(-np.abs(int(img[y][x])-int(img[y-1][x]))/sigma)
+
+def permeD(img,x,y,sigma=0.5):
+    '''
+    this function calculates permeability weight in right direction
+    '''
+    return np.exp(-np.abs(int(img[y][x])-int(img[y+1][x]))/sigma)
 
 # SWS right order - left to right ----------------------------------------------
 def SWS_r(limg,rimg,x,y,d,para):
@@ -125,7 +138,8 @@ def SWS_r(limg,rimg,x,y,d,para):
     C_sum = 0
     my_prod = 1
 
-    for i in range (x-1):
+    ran = para['ran'] if para['ran'] < x-1 else x-1
+    for i in range (ran):
         for ii in range(i):
             my_prod = my_prod * permeR(limg,x-(ii+1),y)
 
@@ -159,9 +173,10 @@ def SWS_l(limg,rimg,x,y,d,para):
     C_sum = 0
     my_prod = 1
 
-    for i in range (limg.shape[1]-x-1):
+    ran = para['ran'] if para['ran'] < limg.shape[1]-x-1 else limg.shape[1]-x-1
+    for i in range (ran):
         for ii in range(i):
-            my_prod = my_prod * permeR(limg,x+(ii+1),y)
+            my_prod = my_prod * permeL(limg,x+(ii+1),y)
 
         C_sad = SADcost(limg,rimg,x+(i+1),y,d)
         C_ct = Hamm(censusTrans(limg,width,height,x+(i+1),y),
@@ -177,20 +192,80 @@ def SWS_l(limg,rimg,x,y,d,para):
     return C_comb + C_sum
 
 # horizontal -------------------------------------------------------------------
-def SWS_horizontal(limg,rimg,x,y,d,para):
+def SWS_total(limg,rimg,x,y,d,para):
     '''
     This combines sws_r and sws_l
     '''
     swsl = SWS_l(limg,rimg,x,y,d,para)
     swsr = SWS_r(limg,rimg,x,y,d,para)
-    return None
+    swsu = SWS_u(limg,rimg,x,y,d,para)
+    swsd = SWS_d(limg,rimg,x,y,d,para)
+    
+    return swsl + swsr + swsu + swsd
+
+# SWS up order - down to up -----------------------------------------------
+def SWS_u(limg,rimg,x,y,d,para):
+    '''
+    This function will perform successive weighted summation
+
+    '''
+    C_sum = 0
+    my_prod = 1
+
+    ran = para['ran'] if para['ran'] < limg.shape[0]-y-1 else limg.shape[0]-y-1
+    for i in range (ran):
+        for ii in range(i):
+            my_prod = my_prod * permeU(limg,x,y+(ii+1))
+
+        C_sad = SADcost(limg,rimg,x,y+(i+1),d)
+        C_ct = Hamm(censusTrans(limg,width,height,x,y+(i+1)),
+            censusTrans(rimg,width,height,x+d,y+(i+1)))
+        C_comb = para['alpha']*C_sad+(1-para['alpha'])*C_ct
+        C_sum = C_sum + C_comb * my_prod
+
+    C_sad = SADcost(limg,rimg,x,y,d)
+    C_ct = Hamm(censusTrans(limg,width,height,x,y),
+        censusTrans(rimg,width,height,x,y))
+    C_comb = para['alpha']*C_sad+(1-para['alpha'])*C_ct
+
+    return C_comb + C_sum
+
+# SWS down order - up to down -----------------------------------------------   
+def SWS_d(limg,rimg,x,y,d,para):
+    '''
+    This function will perform successive weighted summation
+
+    '''
+    C_sum = 0
+    my_prod = 1
+    
+    ran = para['ran'] if para['ran'] < y-1 else y-1
+    for i in range (ran):
+        for ii in range(i):
+            my_prod = my_prod * permeU(limg,x,y-(ii+1))
+
+        C_sad = SADcost(limg,rimg,x,y-(i+1),d)
+        C_ct = Hamm(censusTrans(limg,width,height,x,y-(i+1)),
+            censusTrans(rimg,width,height,x+d,y-(i+1)))
+        C_comb = para['alpha']*C_sad+(1-para['alpha'])*C_ct
+        C_sum = C_sum + C_comb * my_prod
+
+    C_sad = SADcost(limg,rimg,x,y,d)
+    C_ct = Hamm(censusTrans(limg,width,height,x,y),
+        censusTrans(rimg,width,height,x,y))
+    C_comb = para['alpha']*C_sad+(1-para['alpha'])*C_ct
+
+    return C_comb + C_sum
 
 
-# Main loop ####################################################################
+# Main loop ###################################################################
 if __name__ == "__main__" or True:
+    
+    start = time.time()
     # parameters
     para = {
-        'alpha':    0.25
+        'alpha':    0.25,
+        'ran':      1
     }
 
     # test parameters
@@ -229,6 +304,28 @@ if __name__ == "__main__" or True:
     #
     # # permeability:
     # my = permeAggre(limg,t['x'],t['y'])
-
+        
     # SWS
-    print SWS_r(limg,rimg,t['x'],t['y'],t['disp'],para)
+    minval = 100
+    
+    dispmap = np.zeros((limg.shape[0],limg.shape[1]))
+    for y in range(limg.shape[0]):
+        for x in range(limg.shape[1]):
+            minval = 100000
+            for i in range(60):
+                sws = SWS_total(limg,rimg,x,y,i,para)
+                if sws < minval:
+                    minval = sws
+                    ii = i
+            
+            dispmap[y][x] = ii
+        
+        if y%10== 0:
+            print y
+                    
+        
+
+
+    print "min val", minval ,"at", ii 
+    
+    print "Script took", (time.time() - start), "secs"
