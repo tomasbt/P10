@@ -3,7 +3,7 @@
 
 import numpy as np
 import re
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 import time
 
 # Read PGM ---------------------------------------------------------------------
@@ -108,7 +108,7 @@ def permeL(img,x,y,sigma=0.5):
     this function calculates permeability weight in right direction
     '''
     return np.exp(-np.abs(int(img[y][x])-int(img[y][x-1]))/sigma)
-    
+
 def permeU(img,x,y,sigma=0.5):
     '''
     this function calculates permeability weight in right direction
@@ -200,7 +200,7 @@ def SWS_total(limg,rimg,x,y,d,para):
     swsr = SWS_r(limg,rimg,x,y,d,para)
     swsu = SWS_u(limg,rimg,x,y,d,para)
     swsd = SWS_d(limg,rimg,x,y,d,para)
-    
+
     return swsl + swsr + swsu + swsd
 
 # SWS up order - down to up -----------------------------------------------
@@ -230,7 +230,7 @@ def SWS_u(limg,rimg,x,y,d,para):
 
     return C_comb + C_sum
 
-# SWS down order - up to down -----------------------------------------------   
+# SWS down order - up to down -----------------------------------------------
 def SWS_d(limg,rimg,x,y,d,para):
     '''
     This function will perform successive weighted summation
@@ -238,7 +238,7 @@ def SWS_d(limg,rimg,x,y,d,para):
     '''
     C_sum = 0
     my_prod = 1
-    
+
     ran = para['ran'] if para['ran'] < y-1 else y-1
     for i in range (ran):
         for ii in range(i):
@@ -260,7 +260,7 @@ def SWS_d(limg,rimg,x,y,d,para):
 
 # Main loop ###################################################################
 if __name__ == "__main__" or True:
-    
+
     start = time.time()
     # parameters
     para = {
@@ -304,10 +304,10 @@ if __name__ == "__main__" or True:
     #
     # # permeability:
     # my = permeAggre(limg,t['x'],t['y'])
-        
+
     # SWS
     minval = 100
-    
+
     dispmap = np.zeros((limg.shape[0],limg.shape[1]))
     for y in range(limg.shape[0]):
         for x in range(limg.shape[1]):
@@ -317,15 +317,15 @@ if __name__ == "__main__" or True:
                 if sws < minval:
                     minval = sws
                     ii = i
-            
+
             dispmap[y][x] = ii
-        
+
         if y%10== 0:
             print y
-                    
-        
 
 
-    print "min val", minval ,"at", ii 
-    
+
+
+    print "min val", minval ,"at", ii
+
     print "Script took", (time.time() - start), "secs"

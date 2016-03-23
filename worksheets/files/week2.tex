@@ -14,14 +14,56 @@ This chapter will describe basics of stereo vision.
 \item Windows sizes and shapes
 \end{itemize}
 
-\section{Color vs Grayscale}
+\section{Color vs Grayscale and different color spaces}
 The article \textbf{Color correlation-based matching} takes the subject of difference in result when using color and which color space is used and grayscale when performing stereo matching. It performs different methods / algorithms using 9 different colorspace including grayscale. The result from the article is that color gives a better result with a few percentage of more correct estimations but the run time is much higher (ranging from 1.9 to 3.7 higher run time than grayscale on the teddy test set).
-From this it is decided to not use color in case of Normalised Cross Correlation
+From this it is decided to not use color in case of Normalized Cross Correlation
 
 \section{Article: Efficient Edge-Preserving Stereo Matching}
-This algorithm seems interesting. The results seems really good and the algorithm should be really fast performing. As a cost calculation it uses Sum of Absolute Differences (SAD) and hamming distance over a census transform. \\
+This algorithm seems interesting. The results seems really good and the algorithm should be really fast performing. As a cost calculation it uses Sum of Absolute Differences (SAD) and hamming distance over a census transform.\\
+\begin{flalign}
+C_d (x,y) = \alpha C_d^{SAD}(x,y) + (1-\alpha) C_d^{CENSUS}(x,y)
+\end{flalign}
 Next is the aggregation (note for self: Aggregation is collection of unit or values ex. mean etc). 
-Permeability calculation: permeability is from biomedicine and is used to create a mathematical model of the behaviors of cell membranes by telling how many molecules can pass through. This idea can also be used for transfer ratio of information through an RGB pixel in an image. It makes the makes the 
+Permeability calculation: permeability is a term used in biomedicine and is used to create a mathematical model of the behaviors of cell membranes by telling how many molecules can pass through. This idea can also be used for transfer ratio of information through an RGB pixel in an image. In this algorithm it is used to figure out where there are edges. It gives high transition in color smooth area (one surface) and low transition in color discontinues (edges). 
+This permeability is used as a weight for successive weighted summation (SWS). The permeability in one direction is calculated as exponential value of a negative difference in color between the current pixel and the pixel the corresponding direction:
+\begin{equation}
+\mu = \min(\exp^{\left(\dfrac{-\delta R}{\sigma}\right)},\exp^{\left(\dfrac{-\delta G}{\sigma}\right)},\exp^{\left(\dfrac{-\delta B}{\sigma}\right)})
+\end{equation}
+The SWS is then calculated using a update rule (The one shown here is for Right scan order - left to right direction):
+\begin{equation}
+C_d^R = C_d(x) + \mu_R(x-1) C_d^R (x-1)
+\end{equation}
+First in horizontal direction and then vertical direction using the data from horizontal SWS.\\
+In the end winner takes all minimization is performed among the disparity candidates.
+Article / Poster mentions that it uses 6 additions and 4 multiplications per pixel which makes it very interesting.\\
+Computational time for different platforms:\\
+\textbf{FPGA} 480x270 image at 60 fps\\ 
+
+\section{Article: Fast Cost-Volume Filtering for Visual Correspondence and beyond}
+Article present very nice resulting disparity maps. Works for stereo matching and optical flow. Optical flow is not so interesting for this application.\\
+It uses guided filter depending on a guidance image (which in case of stereo is the reference image).  
+\begin{flalign}
+  C_{i,l} = (1-\alpha) \min [|| I_i - I'_{i-l} ||, \tau_1] + \alpha \min [|| \nabla_x I_i - \nabla_x I'_{i-l} ||,\tau_2]
+\end{flalign}
+This cost volume expresses how well a pixel in image $I$ fits a pixel shifted by a vector $l$ in the second image $I'$ but in the case of stereo matching $l$ is just a shift in the x-direction. \\
+This cost is filtered using a guided filter. 
+\begin{flalign}
+  C'_{i,l} = \sum_j W_{i,j}(I) C_{j,l}
+\end{flalign}
+The weights for the guided filter is calculated using:
+\begin{flalign}
+  W_{i,j} = \dfrac{1}{|\omega |^2}\sum_{k:(i,j) \in \omega_k} (1+ (I_i - \mu_k)^T (\Sigma_k + \epsilon U)^{-1} (I_j - \mu_k))
+\end{flalign}
+Lastly the best fitting disparity is found using the equation below:
+\begin{flalign}
+  f_i = \arg \min_{l \in \mathcal{L}} C'_{i,l}
+\end{flalign}
+
+This method is interesting since the article shows great results while being able to calculate ~350 million disparity estimations per second on a GPU. In the middlebury test it have a rank of 16 with the avg. error at 5.55 \%. 
+
+\section{Choice of algorithm}
+The choice of algorithm is between Efficient Edge-preserving Stereo Matching, Fast Cost-volume Filtering or Normalized Cross Correlation. \\
+For now Fast cost-volume filtering seems most interesting. 
 
 \section{Occlusions}
 This section will discuss occlusions in stereo vision, what causes it and how to correct occluded areas.\\
@@ -150,7 +192,7 @@ $\mathcal{N}(p_L)$ is a set of non-occluded, neighboring points which will be us
 D(p_L,\mathcal{N}_i(p_L) ) = \dfrac{1}{|\mathcal{N}_i(p_L)|} \; \sum_{q_L \in \mathcal{N}(p_L)} \psi (p_L,q_L) 
 \end{equation}
 
-\section{Result / conclusion from article}
+\subsection{Result / conclusion from article}
 The article performs some test using the 4 occlusion filling methods. For the tests Middlebury stereo images are used. The tests shows the percentage of errors when filling occlusions. The results shows that SLS performs best, DIS performs second best and WLS and NDA performs about the same. SLS during the test performed in the article runs rather slow: 3-10 min while WLS runs for only 10 seconds. SLS is faster than DIS and NDA is expected to be the fastest methods since it is the simplest method. In the conclusion it is theorized that the performance of SLS can be improved greatly by running estimations in parallel. \\
 In this project either NDA or SLS will be used. NDA for the fastest result and SLS for a better result.
 
