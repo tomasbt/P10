@@ -25,7 +25,7 @@ def read_pgm(filename, byteorder='>'):
     except AttributeError:
         raise ValueError("Not a raw PGM file: '%s'" % filename)
     return np.frombuffer(buffer,
-                            dtype='u1' if int(maxval) < 256 else byteorder+'u2',
+                            dtype='int', #'u1' if int(maxval) < 256 else byteorder+'u2',
                             count=int(width)*int(height),
                             offset=len(header)
                             ).reshape((int(height), int(width)))
@@ -257,6 +257,74 @@ def SWS_d(limg,rimg,x,y,d,para):
 
     return C_comb + C_sum
 
+# UPDATE RULES |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+# SWS Right update -------------------------------------------------------------
+def SWS_r_update(limg,rimg,x,y,d,para,C_r_d_former):
+    """
+    This function updates the cost for the SWS right scan order
+    """
+
+    C_sad = SADcost(limg,rimg,x,y,d)
+    C_ct = Hamm(censusTrans(limg,width,height,x,y),
+        censusTrans(rimg,width,height,x+d,y))
+    C_d = para['alpha']*C_sad+(1-para['alpha'])*C_ct
+
+    if x != 0:
+        mu_r_former = permeR(limg,x-1,y)
+        C_r_d = C_d + mu_r_former * C_r_d_former
+    else:
+        C_r_d = C_d
+
+    return C_r_d
+
+# SWS left update -------------------------------------------------------------
+def SWS_l_update(limg,rimg,x,y,d,para,C_r_d_former):
+    """
+    This function updates the cost for the SWS left scan order
+    """
+
+    C_sad = SAD_c_gray(limg[y][x],rimg[y][x+d])
+    C_ct = Hamm(ctrans(limg[y-1:y+1,x-1:x+1]),ctrans(rimg[y-1:y+1,x-1+d:x+1+d]))
+    C_d = para['alpha']*C_sad+(1-para['alpha'])*C_ct
+
+    if x != 0:
+        mu_r_former = permeR(limg,x-1,y)
+        C_r_d = C_d + mu_r_former * C_r_d_former
+    else:
+        C_r_d = C_d
+
+    return C_r_d
+
+# Census Transform update ------------------------------------------------------
+def ctrans(data):
+    '''
+    This function is a reimplementation of the census transform.
+
+    input 3x3 --> output 8x1
+    '''
+
+    censustransform = np.zeros(8)
+
+    count = 0
+    for y in range(3):
+        for x in range(3):
+
+
+            if y == 1 & x == 1:
+                continue
+
+            if data[y][x] < data[1][1]:
+                censustransform[c] = 1
+                count += 1
+
+    return censustransform
+
+# Sum of Absolute Differences --------------------------------------------------
+def SAD_c_gray(data1,data2):
+    '''
+    This function is a reimplementation of the Sum of Absolute Differences cost
+    '''
+    return np.abs(data1-data2)
 
 # Main loop ###################################################################
 if __name__ == "__main__" or True:
@@ -305,12 +373,24 @@ if __name__ == "__main__" or True:
     # # permeability:
     # my = permeAggre(limg,t['x'],t['y'])
 
+    ##
+    #  NEW WAY
+    ##
+
+    # calculate SWS_r for each pixel and save in a vector
+    SWS_r_vector = np.zeros(limg.shape[1]-1)
+
+
+
+    ##
+    #  OLD WAY
+    ##
     # SWS
     minval = 100
 
     dispmap = np.zeros((limg.shape[0],limg.shape[1]))
-    for y in range(limg.shape[0]):
-        for x in range(limg.shape[1]):
+    for y in range(200):
+        for x in range(200):
             minval = 100000
             for i in range(60):
                 sws = SWS_total(limg,rimg,x,y,i,para)
@@ -320,7 +400,7 @@ if __name__ == "__main__" or True:
 
             dispmap[y][x] = ii
 
-        if y%10== 0:
+        if y%10 == 0:
             print y
 
 
