@@ -1,0 +1,20 @@
+\chapter{Architecture design}
+\todo{NOT DONE! rough sketch}
+
+\section{Box filter / Mean function}
+\todo{this section should contain the design for my boxfilter or mean function}
+As seen from the guided image filter algorithm the mean function $f_{mean}(x)$ is used multiple q
+
+\subsection{Finite State Machine}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.6\textwidth]{figures/meanFSMv1.jpg}
+  \caption{TEXT GOES HERE}
+  \label{fig:LABEL}
+\end{figure}
+
+\subsection{Memory}
+
+memory requirement: \\
+$3 \cdot 8$ bits per pixel (rgb image). test image is $741 \times 497$ so for the test image $8.838.648$ bits $\approx$ 9 megabit $\approx$ 1.1 megabyte.
