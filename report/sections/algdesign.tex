@@ -59,21 +59,7 @@ where:
   && b_k &= \bar{p}_k - a_k \mu_k &&  
 \end{flalign}
 
-
-\newpage
-\section{Fast Cost volume}
-Fast Cost Volume (FCV) starts by calculating the cost for a 
-
-\begin{flalign}
-  C^{SAD}_{i,d} &= \sum^{3}_{k=1} || I^{left}_{i} - I^{right}_{i-d} ||\\
-  C^{Grad}_{i,d} &= \nabla_x Ig_i - \nabla_x lg_{i-d} \\
-  C^{Total}_{i,d} &= \alpha \cdot C^{SAD}_{i,d} + (1 - \alpha) \cdot C^{Grad}_{i,d}
-\end{flalign}  
-{\footnotesize Where $I$ is the color image, $Ig$ is a grayscale image}
-
-
-
-\subsection{Guided Image filtering}
+\subsubsection*{algorithm}
 \textbf{Input:} \\
 filtering input image: $p$\\
 guidance image: $I$\\
@@ -96,3 +82,9 @@ filtering output: $q$\\
   \item $q = \mu_a \cdot I + \mu_b$
   
 \end{enumerate}
+
+\section{Simulation and comparison}
+\todo{simulation af de 2 algorithmer og samlign resultaterne.}
+
+\section{Choice of algorithm}
+\todo{Nok en anden titel til denne sektion. Skriv hvilken algorithme jeg går videre med}

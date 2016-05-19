@@ -45,28 +45,28 @@ def permeability(img,x,y,sigma=0.5,direct='r'):
         return np.exp(-np.abs(int(img[y][x])-int(img[y][x+1]))/sigma)
 
     elif direct == 'l':
-        # If the direction is right then:
+        # If the direction is left then:
         return np.exp(-np.abs(int(img[y][x])-int(img[y][x-1]))/sigma)
 
     elif direct == 't':
-        # If the direction is right then:
+        # If the direction is top then:
         return np.exp(-np.abs(int(img[y][x])-int(img[y+1][x]))/sigma)
 
     elif direct == 'b':
-        # If the direction is right then:
+        # If the direction is bottom then:
         return np.exp(-np.abs(int(img[y][x])-int(img[y-1][x+1]))/sigma)
     else:
         # Error
         return None
 
-def sws_update(limg,rimg,x,y,f_data,alpha,d,direct='r'):
+def sws_update_horr(limg,rimg,x,y,f_data,alpha,d,direct='r'):
     '''
     Update rule for successive weighted sum
 
     limg   - data from the left image
     rimg   - data from the right image
     x, y   - coordinates for the current pixel
-    direct - which scan order is going to be preformed. either 'r','l','t' or 'b'
+    direct - which scan order is going to be preformed. either 'r' or 'l'
     f_data - former data
     alpha  - parameter for cost calculation
     d      - Disparity
@@ -86,17 +86,29 @@ def sws_update(limg,rimg,x,y,f_data,alpha,d,direct='r'):
 
         curr_c = c_d + permeability(rimg,x,y,direct='l')*f_data
 
-    elif direct == 't':
-        # if the direction is left then do the following
+    # print 'x,y:',x,y,'and d:',d,'and cost:',curr_c
+    return curr_c
 
-        curr_c = c_d + permeability(rimg,x,y,direct='t')*f_data
+def sws_update_vert(img,horr_data,x,y,f_data,d,direct='t'):
+    '''
+    Update rule for successive weighted sum
+
+    img - image data for permeability calculation
+    x,y - coordinates
+    f_data - former data
+    d - disparity
+    direct - Direction. either 't' or 'b'
+    '''
+    if direct == 't':
+        # if the direction is towards top then do the following
+
+        curr_c = horr_data + permeability(img,x,y,direct='t')*f_data
 
     elif direct == 'b':
-        # if the direction is left then do the following
+        # if the direction is towards bottom then do the following
 
-        curr_c = c_d + permeability(rimg,x,y,direct='b')*f_data
+        curr_c = horr_data + permeability(img,x,y,direct='b')*f_data
 
-    # print 'x,y:',x,y,'and d:',d,'and cost:',curr_c
     return curr_c
 
 if __name__ == "main" or True:
@@ -160,6 +172,20 @@ if __name__ == "main" or True:
                 # print 'dir = L','x,y:',x,y,'and d:',d
                 aggre_L[y][x][d] = sws_update(Limg,Rimg,x,y,aggre_L[y][x+1][d],al,d,direct='l')
 
+    # horizontal aggregation
+    horz_aggre = np.zeros(Limg.shape+(maxDisp,))
+    for y in range(1,Rimg.shape[0]-1):
+        for x in range(1,Rimg.shape[1]-1):
+            maxD = maxDisp if x+maxDisp <= Rimg.shape[1]-1 else Rimg.shape[1]-x-1
+            for d in range(maxD):
+                # horizontal data
+                c_sad = np.abs(Rimg[y][x]-Limg[y][x+d])
+                c_d = al*c_sad+(1-al)*Hamm(ctrans(Rimg[y-1:y+2,x-1:x+2]),
+                                            ctrans(Limg[y-1:y+2,x-1+d:x+2+d]))
+                horz_aggre[y][x][d] = c_sad + \
+                        permeability(Rimg,x-1,y,direct='r')*aggre_R[y][x-1][d] + \
+                        permeability(Rimg,x+1,y,direct='l')*aggre_L[y][x+1][d]
+
     # calculate top scan values
     for y in range(Rimg.shape[0],0,-1):
         for x in range(Rimg.shape[1]):
@@ -175,7 +201,7 @@ if __name__ == "main" or True:
                     continue
 
                 # print 'dir = T','x,y:',x,y,'and d:',d
-                aggre_T[y][x][d] = sws_update(Limg,Rimg,x,y,aggre_T[y+1][x][d],al,d,direct='t')
+                aggre_T[y][x][d] = sws_update_vert(Rimg,horz_aggre[y+1][x][d],x,y,aggre_T[y+1][x][d],d,direct='t')
 
     # calculate bottom scan values
     for y in range(Rimg.shape[0]):
@@ -191,23 +217,18 @@ if __name__ == "main" or True:
                 elif y == Rimg.shape[0]-1:
                     continue
 
-                # print 'dir = B','x,y:',x,y,'and d:',d
-                aggre_B[y][x][d] = sws_update(Limg,Rimg,x,y,aggre_B[y-1][x][d],al,d,direct='b')
+                # print 'dir = B','x,y:',x,y,'and d:',d  def sws_update_vert(img,horr_data,x,y,f_data,d,direct='t'):
+                aggre_B[y][x][d] = sws_update_vert(Rimg,horz_aggre[y+1][x][d],x,y,aggre_T[y+1][x][d],d,direct='b')
 
-    # combine values
-    horz_aggre = np.zeros(Limg.shape+(maxDisp,))
+    # combine vertical aggregation data
+    total_aggre = np.zeros(Limg.shape+(maxDisp,))
     for y in range(1,Rimg.shape[0]-1):
         for x in range(1,Rimg.shape[1]-1):
             maxD = maxDisp if x+maxDisp <= Rimg.shape[1]-1 else Rimg.shape[1]-x-1
             for d in range(maxD):
-                # horizontal data
-                c_sad = np.abs(Rimg[y][x]-Limg[y][x+d])
-                c_d = al*c_sad+(1-al)*Hamm(ctrans(Rimg[y-1:y+2,x-1:x+2]),
-                                            ctrans(Limg[y-1:y+2,x-1+d:x+2+d]))
-                horz_aggre[y][x][d] = c_sad + \
-                        permeability(Rimg,x-1,y,direct='r')*aggre_R[y][x-1][d] + \
-                        permeability(Rimg,x+1,y,direct='l')*aggre_L[y][x+1][d]
-
+                total_aggre[y][x][d] = horz_aggre[y][x][d] + \
+                        permeability(Rimg,x-1,y,direct='r')*aggre_T[y+1][x][d] + \
+                        permeability(Rimg,x+1,y,direct='l')*aggre_B[y-1][x][d]
 
     print 'time taken:', time.time()-start,'secs'
 

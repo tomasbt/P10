@@ -1,4 +1,4 @@
-%  A simple AAU report template.
+%%  A simple AAU report template.
 %  2015-05-08 v. 1.2.0
 %  Copyright 2010-2015 by Jesper Kjær Nielsen <jkn@es.aau.dk>
 %
@@ -39,28 +39,19 @@
 \pagenumbering{arabic} %use arabic page numbering in the mainmatter
 \input{sections/introduction.tex}
 
-\chapter{Preliminary Analysis}
-\section{Stereo vision}
+\input{sections/preanalysis.tex}
 
-\chapter{Hardware Platform}
 
-\chapter{Requirements}
-\section{Requirement specification}
-\section{Test specification}
+\input{sections/hardwareplat.tex}
 
-\chapter{Algorithm}
-\section{Analysis}
-\section{Algorithm design}
-\section{Algorithm realization}
-\section{Simulation/verification}
 
-\chapter{Architecture}
-\section{Analysis}
-\section{Architecture design}
-\section{Architecture Implementation}
-\section{Simulation/verification}
+\input{sections/requirements.tex}
 
-\chapter{Acceptance test}
+\input{sections/algdesign.tex}
+
+\input{sections/archdesign.tex}
+
+\input{sections/accepttest.tex}
 
 \input{sections/conclusion.tex}
 \printbibliography[heading=bibintoc]

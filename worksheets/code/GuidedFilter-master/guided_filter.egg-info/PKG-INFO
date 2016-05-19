@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: guided-filter
+Version: 1.0
+Summary: Simple python demos of Guided Image Filtering [He et al. 2010].
+Home-page: https://github.com/tody411/GuidedFilter.git
+Author: tody
+Author-email: UNKNOWN
+License: MIT
+Description: UNKNOWN
+Platform: UNKNOWN
