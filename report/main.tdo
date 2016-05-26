@@ -1,4 +1,58 @@
 \defcounter {refsection}{0}\relax 
-\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ Is it possible to add a subsubparagraph?}{1}{section*.5}
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ M\IeC {\r a}ske anden formulering}{1}{section*.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {todo}{\color@fb@x {}{black}{}{green}{\leavevmode {\color {green}o}}\ I think that a summary of this exciting chapter should be added.}{1}{section*.6}
+\contentsline {todo}{Figure: image from stereo vision home page showing human vision looking on bowling cones. REMEMBER CITE}{1}{section*.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ Skriv om A3 modellen. Pr\IeC {\o }v at se om du kan finde noget litteratur/cite p\IeC {\r a} modellen}{2}{section*.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{Figure: figur af A3 modellen med de 3 bobler: application, algorithm og architecture}{2}{section*.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ skriv problem formulering / afgr\IeC {\ae }sning osv}{2}{section*.6}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ ikke f\IeC {\ae }rdig}{3}{section*.7}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{Figure: Figur af stereo kamera}{3}{section.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{Figure: Figur af punkt ude i 'scenen'}{3}{section.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{Figure: Figur af beregning af disparitet}{3}{section.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ skriv noget om forskellige farve rum og grayscale og deres inflydelse p\IeC {\r a} stereo algorithmen}{4}{section*.8}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ skriv noget om disparitets opl\IeC {\o }sning i forhold til billede opl\IeC {\o }sning osv.}{4}{section*.9}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ skriv noget om metoder til at udfylde occlusions omr\IeC {\r a}der}{4}{section*.10}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ Slut af med mini-konklusion p\IeC {\r a} omr\IeC {\r a}derne / delimitation}{8}{section*.15}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ F\IeC {\r a} lavet en tabel som indeholder kravene}{9}{section*.16}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ Regner med at lave en test hvor jeg med min egen python simulering tr\IeC {\ae }kker dataen ud lige f\IeC {\o }r hvor dataen skal bruges i det jeg har f\IeC {\r a}et lavet et hardware design af. s\IeC {\r a} vil jeg samligne med middlebury test sets}{9}{section*.18}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ skriv hvordan jeg vil teste de forskellige krav}{9}{section*.19}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ beskrive middlebury test sets her? Nej beskriv dem i appendix}{9}{section*.20}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ ROUGH SKETCH not done yet}{11}{section*.21}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ simulation af de 2 algorithmer og samlign resultaterne.}{13}{section*.22}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ Nok en anden titel til denne sektion. Skriv hvilken algorithme jeg g\IeC {\r a}r videre med}{13}{section*.23}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ beskriv Zynq platformen. kom ind p\IeC {\r a} hvad den indeholder}{15}{section*.24}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ FPGA contraints ==> C = f(A, T, P, N), Lav en tabel}{15}{section*.25}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ l\IeC {\ae }s om system design methodologies i gajski's \textbf {Embedded Systems Design - Modeling, Synthesis and Verification} og beskriv Platform Methodology}{17}{section*.26}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ NOT DONE! rough sketch. De nedenst\IeC {\r a}ende trin er hvad jeg skal igennem: Para. Anal., Alloc., Optimizaiton, FSMD og VHDL + simulering }{19}{section*.27}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ this section should contain the design for my boxfilter or mean function}{19}{section*.28}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ beskriv FSM'en jeg har lavet (se figur 6.1) }{19}{section*.29}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ skriv om VHDL kode og simulation af filteret}{20}{section*.32}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ skriv om implementation p\IeC {\r a} FPGA'en og gerne verificere det virker}{20}{section*.33}
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ udf\IeC {\o }r accept test udfra test specifikationen (brug data fra python simulering og giv det til VHDL implementationen)}{21}{section*.34}

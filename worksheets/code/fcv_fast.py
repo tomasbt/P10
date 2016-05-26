@@ -86,13 +86,13 @@ if __name__ == '__main__' or True:
              'ven' : ['data/usable/venl.ppm','data/usable/venr.ppm',32]}
 
     # set constants
-    image = 'nku'
+    image = 'mot'
     al = 0.11
 
     maxDisp = fdict[image][2]
-    r = 14
+    r = 9
     eps = 0.0001
-    lim = 10
+    lim = 2
     tB = 3.0/255
     tC = 7.0/255
     tG = 2.0/255
@@ -208,24 +208,12 @@ if __name__ == '__main__' or True:
     labels_left = np.argmin(dispVol,axis=2)
     labels_right = np.argmin(dispVol1,axis=2)
 
-
-    print "OY LOOK HERE!"
-    plt.figure()
-    plt.imshow(labels_left,cmap=plt.cm.gray)
-    plt.figure()
-    plt.imshow(labels_right,cmap=plt.cm.gray)
-
-    print "OY ! STOP LOOKING"
-    # left - right consistency check
-    # Y = ml.repmat(np.arange(m).reshape(1,m), 1, n)
-    # X = ml.repmat(np.arange(n), m, 1)
-    # XX = X - labels_left
-    # XX[XX<1] = 1
-    # # indices = sub2indWrap([m,n],Y,X)
+    # plt.figure()
+    # plt.imshow(labels_left,cmap=plt.cm.gray)
+    # plt.figure()
+    # plt.imshow(labels_right,cmap=plt.cm.gray)
 
     final_labels = 1*labels_left
-
-    # final_labels[np.abs(labels_left-labels_right[indices])>=1] = -1
 
     for y in range(m):
         for x in range(n):
@@ -245,20 +233,19 @@ if __name__ == '__main__' or True:
                 final_labels_filled[y][x] = final_labels_filled[y][x+1]
 
 
-    plt.figure()
-    plt.imshow(final_labels_filled,cmap=plt.cm.gray)
+    # plt.figure()
+    # plt.imshow(final_labels_filled,cmap=plt.cm.gray)
 
     plt.figure()
     plt.imshow(final_labels,cmap=plt.cm.gray)
-    fstr = 'data/res/'+image+'_fcv_r'+str(r)+'_al'+str()+'.jpg'
+    fstr = 'data/res/fcv_norm/'+image+'_fcv_r'+str(r)+'_al'+str(al)+'.jpg'
     plt.imsave(fstr,final_labels,cmap=plt.cm.gray)
 
     if image == 'mot':
-        fstr = 'data/res/'+image+'_fcv_r'+str(r)+'.pfm'
+        fstr = 'data/res/fcv_norm/'+image+'_fcv_r'+str(r)+'_al'+str(al)+'.pfm'
         file = open(fstr,'wb')
         save_pfm(file, final_labels_filled.astype('float32'), scale = 1)
         file.close()
-
 
 
     print 'Script ended. Time taken:',time.time()-start,'seconds'

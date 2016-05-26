@@ -369,11 +369,11 @@ if __name__ == '__main__' or True:
 
     plt.figure()
     plt.imshow(final_labels,cmap=plt.cm.gray)
-    fstr = 'data/res/'+image+'_ssd'+str(al)+'.jpg'
+    fstr = 'data/res/fcv_ssd/'+image+'_ssd'+str(al)+'.jpg'
     plt.imsave(fstr,final_labels,cmap=plt.cm.gray)
 
     if image == 'mot':
-        fstr = 'data/res/'+image+'_ssd'+str(al)+'.pfm'
+        fstr = 'data/res/fcv_ssd/'+image+'_ssd'+str(al)+'.pfm'
         file = open(fstr,'wb')
         save_pfm(file, final_labels_filled.astype('float32'), scale = 1)
         file.close()
