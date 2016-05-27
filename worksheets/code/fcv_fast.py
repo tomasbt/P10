@@ -86,11 +86,11 @@ if __name__ == '__main__' or True:
              'ven' : ['data/usable/venl.ppm','data/usable/venr.ppm',32]}
 
     # set constants
-    image = 'mot'
+    image = 'conf'
     al = 0.11
 
     maxDisp = fdict[image][2]
-    r = 9
+    r = 19
     eps = 0.0001
     lim = 2
     tB = 3.0/255
@@ -179,7 +179,6 @@ if __name__ == '__main__' or True:
 
     print 'Starting Guided image filter. Time taken so far', time.time()-start, 'seconds'
 
-
     Il_gf = cv2.ximgproc.createGuidedFilter(Limg,r,eps)
     Ir_gf = cv2.ximgproc.createGuidedFilter(Rimg_1,r,eps)
     q = np.zeros((m,n),dtype=np.float32)
@@ -240,6 +239,7 @@ if __name__ == '__main__' or True:
     plt.imshow(final_labels,cmap=plt.cm.gray)
     fstr = 'data/res/fcv_norm/'+image+'_fcv_r'+str(r)+'_al'+str(al)+'.jpg'
     plt.imsave(fstr,final_labels,cmap=plt.cm.gray)
+    print "image saved as:" + fstr
 
     if image == 'mot':
         fstr = 'data/res/fcv_norm/'+image+'_fcv_r'+str(r)+'_al'+str(al)+'.pfm'
@@ -247,5 +247,5 @@ if __name__ == '__main__' or True:
         save_pfm(file, final_labels_filled.astype('float32'), scale = 1)
         file.close()
 
-
+    plt.close("all")
     print 'Script ended. Time taken:',time.time()-start,'seconds'
