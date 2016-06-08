@@ -86,11 +86,11 @@ if __name__ == '__main__' or True:
              'ven' : ['data/usable/venl.ppm','data/usable/venr.ppm',32]}
 
     # set constants
-    image = 'conf'
+    image = 'tsu'
     al = 0.11
 
     maxDisp = fdict[image][2]
-    r = 19
+    r = 9
     eps = 0.0001
     lim = 2
     tB = 3.0/255
