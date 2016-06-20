@@ -1,2 +1,38 @@
 \chapter{Design methodology} \label{ch:designmet}
 \todo{læs om system design methodologies i gajski's \textbf{Embedded Systems Design - Modeling, Synthesis and Verification} og beskriv Platform Methodology}
+Y-chart
+\cite{gajski2009}
+
+\color{gray}
+\section*{noter til mig selv}
+% --------------------------- udkommentere senere ------
+processor synthesis:\\
+side 32 i gajski pdf \\
+(a) allocation of components and connections \\
+(b) cycle-accurate scheduling\\
+(c) Binding of variables, operations and transfers\\
+(d) Synthesis of controller\\
+(e) Model refinement\\
+(a-c) kan udføres sammen eller i hvilken som helst rækkefølge men de er afhængige af hinanden. Hvis de udføres samtidigt bliver synthesen kompleks og utilregnlig. en strategi er at udføre det i følgende rækkefølge: a c b\\
+Alle trinene ovenover kan udføres automatisk eller manuelt. Hvis det hele bliver udført automatisk kaldes det processor-level synthesis eller high-level synthesis (HLS).  Hvis a-d blvier udført manuelt og e automatisk kaldes det model refinement.\\
+\\
+System-level behavioral model / system synthesis: side 35\\
+(a) Profiling and estimation. \\
+(b) Component and connection allocation\\
+(c) Process and channel binding\\
+(d) Process scheduling\\
+(e) IF component insertion\\
+(f) Model refinement\\
+\\
+1.3 System Design methodology: side 39 \\
+model algebra side 42\\
+algebra:<objects, operations>\\
+$a*(b+c) = a*b+a*c$\\
+dette gør det muligt for system designere at optimere designet vha. arithmetic algebra regler. Udtrykket til venstre for = kræver en multiplier og en adder hvorimod udtrykket på højre side kræver 2 multipliers og en adder.\\
+modelalgebra : <objects, compositions>\\
+\\
+1.4 System-level models: side 44\\
+applications designers, system designers og implementations designers.
+
+
+
