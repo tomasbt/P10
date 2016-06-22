@@ -1,6 +1,6 @@
 \chapter{Design methodology} \label{ch:designmet}
 \todo{læs om system design methodologies i gajski's \textbf{Embedded Systems Design - Modeling, Synthesis and Verification} og beskriv Platform Methodology}
-Y-chart
+\missingfigure{Figur af gajskis y-chart}
 \cite{gajski2009}
 
 \color{gray}
@@ -32,7 +32,23 @@ dette gør det muligt for system designere at optimere designet vha. arithmetic 
 modelalgebra : <objects, compositions>\\
 \\
 1.4 System-level models: side 44\\
-applications designers, system designers og implementations designers.
+applications designers, system designers og implementations designers.\\
+\\
+2 system design methodologies side 56\\
+Dette kapitel beskriver forskellige system design methodologies.\\
+Bottom-up: start i bunden (circuit level) kør fra behavior til physical og lav et library. brug dette library til næste level.\\
+Top-down: Start i øverste level (system level) kør fra behavior over til structure. gå et level ned og gentag. ved nederste level gå fra behavior til physical.\\
+Platform methodology: side 61\\
+FPGA methodology: side 64\\
+er based på FPGA substrat som består af multitude af 4-bits ROM celler (Look-up Tables (LUTs)) og disse LUTs kan implementere enhver 4-variable boolsk funktion. I denne design methodologi vil hver RTL kompement in biblioteket være opbygget af disse 4-variable funktioner. Og derefter bliver processor delene synthesizeret af disse RTL componenter.\\
+sagt på en anden måde: denne methodologi bruger en top-down approach på både system og processor levels hvor standard og custom Processing Elements og Communication Elements er opbygget af LUTs. Et system design starter ved at man mapper en applikation ned på en given platform og derefter syntheser brugerdefineret kompenenter ned til RTL komponenter som er defineret in form af LUTs. Standard processor komponenter i processor biblioteket er allerede defineret i form af LUTs. Når alle vores komponenter er defineret vha LUTs så simplificere vi designet ned til LUTs og BRAM og derefter kan vi udføre placering og routing med værktøjer FPGA producentet har udviklet.\\
+Denne form for top-down metode har de samme svagheder som andre top-down metoder som er at det kan være svært at optimere hele designet ved at simplificere designet ned til basiske LUT celler. Derudover ved udvikler heller ikke om hvordan FPGA producentens værktøj placerere og forbinder LUTs og BRAMs.\\
+
+
+\color{black}
+
+
+
 
 
 
