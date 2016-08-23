@@ -104,7 +104,7 @@ if __name__ == 'main' or True:
     img, s = load_pfm(f)
     f.close()
 
-    f = open('data/res/mot.pfm')
+    f = open('data/res/fcv_norm/mot_fcv_r9_al0.11.pfm')
     img2, s2 = load_pfm(f)
     f.close()
     
@@ -121,11 +121,13 @@ if __name__ == 'main' or True:
 
     Diff = 0
     numbofwrongpixels = 0
+    occImg = np.zeros(img2.shape)
     # img = img[::-1,:]
     img[np.isinf(img)]=0
     lim = 5
     for y in range(img.shape[0]):
         for x in range(img.shape[1]):
+            if
             if np.abs(img2[y][x] - img[y][x]) > lim:
                 Diff = Diff + np.abs(img2[y][x] - img[y][x])
                 numbofwrongpixels += 1

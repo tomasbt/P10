@@ -1,0 +1,46 @@
+\chapter{Allocation test}
+This appendix will explain how the average allocation of logic elements for each functional unit is found.\\
+The result is used in table~\vref{tab:utilizationofelements} in chapter \ref{ch:archdesign}. The table is repeated here in table~\vref{tab:apputilizationofelements}
+
+\begin{table}[ht!]
+\centering
+\begin{tabular}{l | c c c c c }
+  \toprule
+   &  LUT & LUTRAM & FF & BRAM & DSP48 \\
+  \midrule
+  Adder & 15 & - & 15 & - & - \\
+  Adder/Subtracter  & 16 & - & 15 & - & - \\
+  Subtract  & 15 & - & 15 & - & - \\
+  Multiplier - LUT  & 352 & - & 36 & - & - \\
+  Multiplier - DSP48 & - & - & - & - & 1 \\
+  Divider & 680 & 1 & 150 & 0.5 & 8 \\
+  \bottomrule
+\end{tabular}
+\caption{Number of logic elements used in average for each FU}
+\label{tab:apputilizationofelements}
+\end{table}
+
+\section{General procedure}
+This section will describe the general procedure to find the utilization of logic elements for the specified FUs. 
+
+First a new project is created in Xilinx Vivado 2016.2. All the settings are set to standard except for the target which is set to ZedBoard Zynq Evaluation and Development Kit. Then a block design is created and a single IP of the wanted type is added. Then for each input and output a port is generated and connected to the inputs and outputs. Using TCL commands the IP block is copied 99 times and for each copy a new output port is generated and connected to the copy. The inputs are all connected the original corresponding ports except for the divider FU where each copy will have its own input ports. When everything have been connected then Vivado is set to generate top-level HDL wrapper for the block design. Run a synthesis and after completion check the utilization table under the project summary. These values should be divided by 100 and inserted into table~\vref{tab:apputilizationofelements}
+
+The following sections will describe the specific settings for each FUs. 
+
+\section{Adder}
+This FU uses the Xilinx Adder/Subtracter v12.0 LogiCORE IP. The IP is set to implement using \textit{Fabric}. The inputs are set to a width of 15 bits, mode is set to \textit{add} and the output is set to 15 bits and latency is set to 1. All control signals are disabled.
+
+\section{Subtract}
+This FU uses the Xilinx Adder/Subtracter v12.0 LogiCORE IP. The IP is set to implement using \textit{Fabric}. The inputs are set to a width of 15 bits, mode is set to \textit{subtract} and the output is set to 15 bits and latency is set to 1. All control signals are disabled.
+
+\section{Adder/Subtract}
+This FU uses the Xilinx Adder/Subtracter v12.0 LogiCORE IP. The IP is set to implement using \textit{Fabric}. The inputs are set to a width of 15 bits, mode is set to \textit{add subtract} and the output is set to 15 bits and latency is set to 1. All control signals beside the ADD signal are disabled.
+
+\section{Multiplier - LUT}
+This FU uses the Xilinx Multiplier v12.0 LogiCORE IP. The IP is set to construct the multiplier using \textit{LUTs} and is set to optimize for speed. The inputs are set to a width of 18 bits and the output is set to 36 bits and pipeline stages is set to 1. All control signals are disabled.
+
+\section{Multiplier - DSP48}
+This FU uses the Xilinx Multiplier v12.0 LogiCORE IP. The IP is set to construct the multiplier using \textit{Mults} and is set to optimize for speed. The inputs are set to a width of 18 bits and the output is set to 36 bits and pipeline stages is set to 1. All control signals are disabled.
+
+\section{Divider}
+This FU uses the Xilinx Divider Generator v5.1 LogiCORE IP. The algorithm type is set to \textit{High Radix}. The inputs are set to a width of 16 bits and the output fractional width is set to 16 bits and latency is set to 4. All control signals are disabled.

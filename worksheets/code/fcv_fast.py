@@ -86,7 +86,7 @@ if __name__ == '__main__' or True:
              'ven' : ['data/usable/venl.ppm','data/usable/venr.ppm',32]}
 
     # set constants
-    image = 'tsu'
+    image = 'mot'
     al = 0.11
 
     maxDisp = fdict[image][2]

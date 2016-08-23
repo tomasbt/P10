@@ -2,7 +2,7 @@
 \todo{NOT DONE! rough sketch. De nedenstående trin er hvad jeg skal igennem: Para. Anal., Alloc., Optimizaiton, FSMD og VHDL + simulering }
 This chapter will describe the design process for the hardware architecture. In section \ref{sec:ParaAnal} a parallelism analysis is performed. Section \ref{sec:AllocSched} will describe the allocation and scheduling of the hardware elements.
 
-\section{Parallelism Analysis}
+\section{Parallelism Analysis}\label{sec:paraanal}
 The inherent parallelism of the system has been analyzed to find out which improvements can be made. Figure xx shows a diagram of the whole system and on the following pages, data flow graphs (DFG) for each subsystem can be found. \\
 
 \begin{figure}[ht!]
@@ -30,30 +30,47 @@ If $rank(\uuline \Gamma) \leq s-1$ where $s$ is the number of nodes then a posit
   1
   \end{bmatrix}
 \end{equation}
-This $\uline q$ vector expresses how many times each node have to be executed.
+This $\uline q$ vector expresses how many times each node have to be executed within one sample period.\\
+
+With $\uuline \Gamma$ and $\uline q$ a periodic admissible sequential sequence (PASS) can be found. This tells a sequential sequence in which the nodes can be executed and with it, a periodic admissible parallel sequence (PAPS) can be generated. To find the PASS generate a randomly ordered list of all the nodes, $L$. For each 
 
 \section{Allocation and Scheduling}
+To develop a Finite State Machine (FSM) we need to know which hardware is allocated and when each operation is scheduled. This enables us to define some states for the FSM.
 
-%precedence graphs
+From section~\vref{sec:paraanal} some precedence graphs are found and theses graphs shows how many FUs can run in parallel 
 
-\begin{figure}[ht!]
-  \centering
-  \includegraphics[scale=0.3]{figures/pg_mean_filter}
-  \caption{Precedence graph mean filter}
-  \label{fig:pg_mean}
-\end{figure}
+\todo{Skitse. skal skrives om på et tidspunkt} To figure out how much can be allocated to the system we have started a new project in Xilinx Vivado 2016.2, chosen ZEDboard with a Zynq Z-7020 as the target and then generate a block design with a chosen element (adder, multiplier, etc.). TCL commands are used to copy the first element 99 times and connecting the inputs to the same input and generate a separate output for each element. Then let Vivado generate its own VHDL wrapper for the block design and run synthesis. Then look in the project summary for utilization. When Re-customizing the IP blocks the signal width are kept as standard and everything else is set for high speed. \\  
+\begin{table}[ht!]
+\centering
+\begin{tabular}{l | c c c c c }
+  \toprule
+   &  LUT & LUTRAM & FF & BRAM & DSP48 \\
+  \midrule
+  Adder & 15 & - & 15 & - & - \\
+  Adder/Subtracter  & 16 & - & 15 & - & - \\
+  Subtract  & 15 & - & 15 & - & - \\
+  Multiplier - LUT  & 352 & - & 36 & - & - \\
+  Multiplier - DSP48 & - & - & - & - & 1 \\
+  Divider & 680 & 1 & 150 & 0.5 & 8 \\
+  \bottomrule
+\end{tabular}
+\caption{Number of logic elements used in average for each operator}
+\label{tab:utilizationofelements}
+\end{table}
 
+\newpage
+% precedence graphs
 \begin{figure}[ht!]
   \centering
   \includegraphics[scale=0.3]{figures/whole_system}
-  \caption{The complete system}
+  \caption{Data flow graph of the whole system}
   \label{fig:whole_system}
 \end{figure}
 
 \begin{figure}[ht!]
   \centering
   \includegraphics[scale=0.3]{figures/c_sad}
-  \caption{$C_{SAD}$}
+  \caption{Data flow graph of the $C_{SAD}$ block in figure \ref{fig:whole_system}}
   \label{fig:c_sad}
 \end{figure}
 
@@ -166,65 +183,19 @@ Brent's law:\\
 $T_p \leq T_N + \dfrac{T_1 - T_N}{p}$ \\
 $T_p = O \left( T_N + \dfrac{T_1}{p} \right)$\\
 $\dfrac{T_1}{p} \leq T_p < \dfrac{T_1}{p} + T_\infty$ det viser at \textit{span} og \textit{work} giver nogle fornuftige grænser for computation time.\\
-
-%Torben og Tobias bog: side 149 pdf: Parallel computing\\
-%Flynn taxonomy:\\
-%SISD: Single Instruction Single Data\\
-%SIMD: Single Instruction Multiple Data\\
-%MIMD: Multiple Instruction Multiple Data\\
-%- SPMD: Single Program MD\\
-%- MPMD: Multiple Program MD\\
-%MISD: Multiple Instructions Single Data\\
-%Scheduling: \\
-%\begin{equation}
-%\left\lbrace 
-%\begin{matrix}
-%\Theta_0 \\
-%\vdots \\
-%\Theta_n \\
-%\vdots \\
-%\Theta_{N-1}
-%\end{matrix}  
-%\right\rbrace_{tasks} \rightarrow
-%\left\lbrace 
-%\begin{matrix}
-%W_0 \\
-%\vdots \\
-%W_{M-1}
-%\end{matrix}  
-%\right\rbrace_{workers} \rightarrow
-%\left\lbrace 
-%\begin{matrix}
-%\Theta_0, \dots, \Theta_{M-1} \\
-%\Theta_M, \dots, \Theta_{2M-1} \\
-%\vdots \\
-%\Theta_{\lfloor N/M \rfloor M}, \dots, \Theta_{N-1} \\
-%\end{matrix}  
-%\right\rbrace_{results}
-%\end{equation}
-%Round robin\\
-%Amdahl's law:\\
-%problem size $\alpha$, $M$ processing units. part of problem is sequential and must be computed first\\
-%\begin{equation}
-%\mathcal{T}_{a}(\alpha;M) = \mathcal{T}_{a,seq}(\alpha) + \mathcal{T}_{a,par}(\alpha;M)
-%\end{equation}
-%Gustafson-Barsis' law:\\
-%Problem size law:\\
 \color{black}
 
-\section{Allocating / Scheduling}
-
-\section{Optimization}
+%\section{Optimization}
 
 \section{FSMD design}
 
 \section{VHDL + Simulation}
 
-\section*{Box filter / Mean function}
-\todo{this section should contain the design for my boxfilter or mean function}
-As seen from the guided image filter algorithm the mean function $f_{mean}(x)$ is used multiple q
-
-%\subsection*{Finite State Machine}
+%\section*{Box filter / Mean function}
+%\todo{this section should contain the design for my boxfilter or mean function}
+%As seen from the guided image filter algorithm the mean function $f_{mean}(x)$ is used multiple q
+%
+%%\subsection*{Finite State Machine}
 %\todo{beskriv FSM'en jeg har lavet (se figur 6.1) }
 %\begin{figure}
 %  \centering
@@ -240,13 +211,13 @@ As seen from the guided image filter algorithm the mean function $f_{mean}(x)$ i
 %  \caption{TEXT GOES HERE}
 %  \label{fig:LABEL}
 %\end{figure}
-
-memory requirement: \\
-$3 \cdot 8$ bits per pixel (rgb image). test image is $741 \times 497$ so for the test image $8.838.648$ bits $\approx$ 9 megabit $\approx$ 1.1 megabyte.
-
-\subsection*{VHDL/Simulation}
-\todo{skriv om VHDL kode og simulation af filteret}
-
-\subsection*{Implementation/Test}
-\todo{skriv om implementation på FPGA'en og gerne verificere det virker}
-
+%
+%memory requirement: \\
+%$3 \cdot 8$ bits per pixel (rgb image). test image is $741 \times 497$ so for the test image $8.838.648$ bits $\approx$ 9 megabit $\approx$ 1.1 megabyte.
+%
+%\subsection*{VHDL/Simulation}
+%\todo{skriv om VHDL kode og simulation af filteret}
+%
+%\subsection*{Implementation/Test}
+%\todo{skriv om implementation på FPGA'en og gerne verificere det virker}
+%
