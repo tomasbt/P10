@@ -34,12 +34,10 @@ This $\uline q$ vector expresses how many times each node have to be executed wi
 
 With $\uuline \Gamma$ and $\uline q$ a periodic admissible sequential sequence (PASS) can be found. This tells a sequential sequence in which the nodes can be executed and with it, a periodic admissible parallel sequence (PAPS) can be generated. To find the PASS generate a randomly ordered list of all the nodes, $L$. For each 
 
-\section{Allocation and Scheduling}
+\section{Allocation and Scheduling}\label{sec:allocsched}
 To develop a Finite State Machine (FSM) we need to know which hardware is allocated and when each operation is scheduled. This enables us to define some states for the FSM.
 
-From section~\vref{sec:paraanal} some precedence graphs are found and theses graphs shows how many FUs can run in parallel 
-
-\todo{Skitse. skal skrives om på et tidspunkt} To figure out how much can be allocated to the system we have started a new project in Xilinx Vivado 2016.2, chosen ZEDboard with a Zynq Z-7020 as the target and then generate a block design with a chosen element (adder, multiplier, etc.). TCL commands are used to copy the first element 99 times and connecting the inputs to the same input and generate a separate output for each element. Then let Vivado generate its own VHDL wrapper for the block design and run synthesis. Then look in the project summary for utilization. When Re-customizing the IP blocks the signal width are kept as standard and everything else is set for high speed. \\  
+From section~\vref{sec:paraanal} some precedence graphs are found and theses graphs shows how many FUs can run in parallel. We need to know how much hardware is needed for each FU. To calculated some simple system have been generate in Vivado 2016.2 and then synthesized. Then utilization of the hardware can be found. Appendix~\vref{app:alloctest} describes in detail the procedure and table~\ref{tab:utilizationofelements} shows the result.
 \begin{table}[ht!]
 \centering
 \begin{tabular}{l | c c c c c }
@@ -58,8 +56,59 @@ From section~\vref{sec:paraanal} some precedence graphs are found and theses gra
 \label{tab:utilizationofelements}
 \end{table}
 
+To create the FSM specification we need to introduce time into the precedence graphs to establish some states. To achieve this scheduling is used. There exists different methods for scheduling and some of these are:
+\begin{itemize}
+  \item Resource Constrained (RC)
+  \item Time Constrained (TC)
+\end{itemize}
+
+\subsection{RC scheduling}
+\todo{lav om til operation og husk mult}
+For both methods the first step is create as soon as possible (ASAP) and as late as possible (ALAP) schedules. Then for the RC scheduling a ready list is created. This list contains a list of operations which are ready for scheduling and sorted by mobility. The mobility, $M(op)$, expresses the difference between the states in which the operation, $op$, have been scheduled in ASAP and ALAP schudules, e.i. $S_{ALAP}(op) - S_{ASAP}(op)$. \\
+Figure \vref{fig:sch_asap_alap} shows an example of an ASAP and an ALAP schedule. As seen on the figure node 1-10, 13, 17, 20 and 22-23 are part of the critical path and therefore mobility is 0 for each of the nodes. Nodes 11-12,14-15,18 and 21 all have a mobility of 2 and nodes 16 and 19 have a mobility of 3. \\
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[t]{0.45\textwidth}
+    \centering\includegraphics[height=6.5cm]{figures/sch_mfilt_asap.jpg}
+    \caption{Example of ASAP schedule\label{fig:sch_asap}}
+  \end{subfigure}\hspace{0.5cm}
+  \begin{subfigure}[t]{0.45\textwidth}
+    \centering\includegraphics[height=6.5cm]{figures/sch_mfilt_alap.jpg}
+    \caption{Example of ALAP schedule\label{fig:sch_alap}}
+  \end{subfigure}
+  \caption{Illustration of ASAP and ALAP schedules. The illustration shows a part of the mean filter shown on figure~\vref{fig:bla} \label{fig:sch_asap_alap}}
+\end{figure}
+
+With mobility found for each node/operation then a ready list can be generated. Add every ready node and then sort them by mobility. In the start the list would look like this: 1. node 1 ($M(+_1)=0$), 2. node 2 ($M(+_2)=0$), 3. node 3 ($M(+_3)=0$), 4. node 4 ($M(+_4)=0$), 5. node 11 ($M(+_{11})=2$), 6. node 12 ($M(+_{12})=2$) and 7. node 16 ($M(+_{16})=3$).\\
+
+Lets say the system have 3 ALU's available then node 1-3 can be scheduled to state 1 since they are higher on the ready list and there is no free ALU for the remaining nodes. The scheduled nodes are removed and the ready list is updated with newly available nodes. The list is still sorted by mobility and will now look like this: 1. node 4 ($M(+_4)=0$), 2. node 5 ($M(+_5)=0$), 3. node 6 ($M(+_6)=0$), 4. node 7 ($M(+_7)=0$), 5. node 11 ($M(+_{11})=2$), 6. node 12 ($M(+_{12})=2$) and 7. node 16 ($M(+_{16})=3$). \\
+
+Then nodes 4-6 are scheduled into state 2 since they have lower mobility than the rest of the ready list. The list is updated again and will look like this: 1. node 7 ($M(+_7)=0$), 2. node 8 ($M(+_8)=0$), 3. node 9 ($M(+_9)=0$), 4. node 11 ($M(+_{11})=2$), 5. node 12 ($M(+_{12})=2$) and 6. node 16 ($M(+_{16})=3$).\\
+
+Nodes 7-9 are scheduled into state 3 and the list is updated again: 1. node 10 ($M(+_10)=0$), 2. node 11 ($M(+_{11})=2$), 3. node 12 ($M(+_{12})=2$) and 4. node 16 ($M(+_{16})=3$).\\
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[height=8.125cm]{figures/pc3alu.jpg}
+  \caption{RC schedule}
+  \label{fig:rc3alu}
+\end{figure}
+
+This is repeated until all nodes have been scheduled and the result is seen in figure \vref{fig:rc3alu}. This schedule uses 2 states more than the ASAP and ALAP but it reduces the cost since it uses 1 less ALU than the ALAP schedule and 5 less than the ASAP schedule.  \\
+This information is described in \cite{gajski2009}.
+
+\subsection{TC schedule}
+The RC schedule improves the cost of the \todo{find et bedre ord}implementation while the TC intends to improve the performance of the implementation. Again ASAP and ALAP schedules are generated and mobility ranges are found. Then some probabilities are assigned to each operation. These probabilities express the probability for the specified operation to be scheduled in each state in its mobility range e.g. operation 11 in \vref{fig:sch_asap_alap} have $1/3$ probability for being scheduled in each of state 1-3. Figure \vref{fig:tc_prob} shows the probabilities for each operation in figure \vref{fig:sch_asap_alap}.
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[height=6.5cm]{figures/tcscheprob}
+  \caption{Probabilities for each operation in figure \vref{fig:sch_asap_alap}}
+  \label{fig:tc_prob}
+\end{figure}
+
+
+
 \newpage
-% precedence graphs
+% precedence graphs --------------------------------------------------------------------------------------------------- --------------------------------------------------------------------------------------------------- --------------------------------------------------------------------------------------------------- --------------------------------------------------------------------------------------------------- --------------------------------------------------------------------------------------------------- --------------------------------------------------------------------------------------------------- --------------------------------------------------------------------------------------------------- --------------------------------------------------------------------------------------------------- 
 \begin{figure}[ht!]
   \centering
   \includegraphics[scale=0.3]{figures/whole_system}
@@ -140,49 +189,49 @@ From section~\vref{sec:paraanal} some precedence graphs are found and theses gra
 \color{gray}
 \section*{noter til mig selv}
 % ---------------------- udkommentere senere --------****
-lav dfg -> pg -> architecture. dette er steppet mellem algoritme og arkitektur domænerne i A3 modellen. Se første side i mm7 i reconf. kursuset. \\ 
-
-
-DSP ALG -> Precedence Graph -> Control data flow graph -> scheduling/allocation -> FSMD specification -> assignment -> architecture\\
-mm7 side (3) Force Directed Scheduling\\
-
-% links https://en.wikipedia.org/wiki/Analysis_of_parallel_algorithms
-Wanhammer \cite{wanhammer1999} side 244 i pdf / 229 i bogen:\\
-Precedence graphs. De beskriver in hvilken rækkefølge forskellige events (a,b,c) sker. order of occurrences of events\\
-Latency: dette er tiden tager at genere et output fra man har modtaget input.
-
-Throughput: dette er tiden mellem outputs
-
-Interleaving: increase throughput af sekventielle algoritmer.
-
-
-~\\
-Fra wiki: https://en.wikipedia.org/wiki/Analysis\_of\_parallel\_algorithms\\
-tag det med en gran salt. er nok hovedsagligt til General Purpose Processors (GPP)\\
-$p$ processors, $T_p$ time computation
-\begin{itemize}
- \item \textit{work}: total number of operations on the processors. Is equal to $T_1$.
- \item \textit{span}: the critical path. Length of longest series of data dependent operations. Is equal to $T_\infty$
- \item \textit{cost}: is $pT_p$ and describes the total time spent by all $p$ on both waiting and computing.
-\end{itemize}
-Laws:
-\begin{itemize}
-  \item \textit{Work law}: $pT_p \geq T_1$. the cost is at least equal to the work
-  \item \textit{Span law}: $T_p \geq T_\infty$. a finite number of processors, $p$, can't outperform an infinite number of processors
-\end{itemize}
-With these definitions and laws the following measures of performance can be given:
-\begin{itemize}
-  \item \textit{Speedup}: is the gain in speed when comparing parallel execution to sequential execution: $S_p = T_1 / T_2$
-  \item \textit{Efficiency}: is the speedup per processor: $S_p / p$
-  \item \textit{Parallelism}: is the ratio $T_1 / T_\infty$ and it describes the maximum speedup on any number of processors. By \textit{span law} the \textit{parallelism} bounds the speedup: if $p>T_1/ T_\infty$ then $T_1/T_p \leq T_1 / T_\infty < p$ 
-  \item \textit{Slackness}: is $T_1/(pT_\infty)$. a slackness than one implies (by span law) that perfect linear speedup is impossible on $p$ processors.
-\end{itemize}
-Execution on a limited number of processors\\
-Parallelitets analyse bliver normalt udført under den antagelse at man har et ubegrænset antal processor tilgængeligt. Dette er selvfølgelig ikke realistisk men ikke et problem da hvilken som helst beregning som kan laves på $N$ processorer kan også blive udført på $p$ processorer hvor $p < N$ ved at lade hver processor udføre flere "enheders" arbejde. \\
-Brent's law:\\
-$T_p \leq T_N + \dfrac{T_1 - T_N}{p}$ \\
-$T_p = O \left( T_N + \dfrac{T_1}{p} \right)$\\
-$\dfrac{T_1}{p} \leq T_p < \dfrac{T_1}{p} + T_\infty$ det viser at \textit{span} og \textit{work} giver nogle fornuftige grænser for computation time.\\
+%lav dfg -> pg -> architecture. dette er steppet mellem algoritme og arkitektur domænerne i A3 modellen. Se første side i mm7 i reconf. kursuset. \\ 
+%
+%
+%DSP ALG -> Precedence Graph -> Control data flow graph -> scheduling/allocation -> FSMD specification -> assignment -> architecture\\
+%mm7 side (3) Force Directed Scheduling\\
+%
+%% links https://en.wikipedia.org/wiki/Analysis_of_parallel_algorithms
+%Wanhammer \cite{wanhammer1999} side 244 i pdf / 229 i bogen:\\
+%Precedence graphs. De beskriver in hvilken rækkefølge forskellige events (a,b,c) sker. order of occurrences of events\\
+%Latency: dette er tiden tager at genere et output fra man har modtaget input.
+%
+%Throughput: dette er tiden mellem outputs
+%
+%Interleaving: increase throughput af sekventielle algoritmer.
+%
+%
+%~\\
+%Fra wiki: https://en.wikipedia.org/wiki/Analysis\_of\_parallel\_algorithms\\
+%tag det med en gran salt. er nok hovedsagligt til General Purpose Processors (GPP)\\
+%$p$ processors, $T_p$ time computation
+%\begin{itemize}
+% \item \textit{work}: total number of operations on the processors. Is equal to $T_1$.
+% \item \textit{span}: the critical path. Length of longest series of data dependent operations. Is equal to $T_\infty$
+% \item \textit{cost}: is $pT_p$ and describes the total time spent by all $p$ on both waiting and computing.
+%\end{itemize}
+%Laws:
+%\begin{itemize}
+%  \item \textit{Work law}: $pT_p \geq T_1$. the cost is at least equal to the work
+%  \item \textit{Span law}: $T_p \geq T_\infty$. a finite number of processors, $p$, can't outperform an infinite number of processors
+%\end{itemize}
+%With these definitions and laws the following measures of performance can be given:
+%\begin{itemize}
+%  \item \textit{Speedup}: is the gain in speed when comparing parallel execution to sequential execution: $S_p = T_1 / T_2$
+%  \item \textit{Efficiency}: is the speedup per processor: $S_p / p$
+%  \item \textit{Parallelism}: is the ratio $T_1 / T_\infty$ and it describes the maximum speedup on any number of processors. By \textit{span law} the \textit{parallelism} bounds the speedup: if $p>T_1/ T_\infty$ then $T_1/T_p \leq T_1 / T_\infty < p$ 
+%  \item \textit{Slackness}: is $T_1/(pT_\infty)$. a slackness than one implies (by span law) that perfect linear speedup is impossible on $p$ processors.
+%\end{itemize}
+%Execution on a limited number of processors\\
+%Parallelitets analyse bliver normalt udført under den antagelse at man har et ubegrænset antal processor tilgængeligt. Dette er selvfølgelig ikke realistisk men ikke et problem da hvilken som helst beregning som kan laves på $N$ processorer kan også blive udført på $p$ processorer hvor $p < N$ ved at lade hver processor udføre flere "enheders" arbejde. \\
+%Brent's law:\\
+%$T_p \leq T_N + \dfrac{T_1 - T_N}{p}$ \\
+%$T_p = O \left( T_N + \dfrac{T_1}{p} \right)$\\
+%$\dfrac{T_1}{p} \leq T_p < \dfrac{T_1}{p} + T_\infty$ det viser at \textit{span} og \textit{work} giver nogle fornuftige grænser for computation time.\\
 \color{black}
 
 %\section{Optimization}
