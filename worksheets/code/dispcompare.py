@@ -127,7 +127,6 @@ if __name__ == 'main' or True:
     lim = 5
     for y in range(img.shape[0]):
         for x in range(img.shape[1]):
-            if
             if np.abs(img2[y][x] - img[y][x]) > lim:
                 Diff = Diff + np.abs(img2[y][x] - img[y][x])
                 numbofwrongpixels += 1

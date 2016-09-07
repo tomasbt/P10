@@ -40,20 +40,20 @@ To develop a Finite State Machine (FSM) we need to know which hardware is alloca
 From section~\vref{sec:paraanal} some precedence graphs are found and theses graphs shows how many FUs can run in parallel. We need to know how much hardware is needed for each FU. To calculated some simple system have been generate in Vivado 2016.2 and then synthesized. Then utilization of the hardware can be found. Appendix~\vref{app:alloctest} describes in detail the procedure and table~\ref{tab:utilizationofelements} shows the result.
 \begin{table}[ht!]
 \centering
-\begin{tabular}{l | c c c c c }
+\begin{tabular}{l | c c c c }
   \toprule
-   &  LUT & LUTRAM & FF & BRAM & DSP48 \\
+   &  LUT & FF & BRAM & DSP48 \\
   \midrule
-  Adder & 15 & - & 15 & - & - \\
-  Adder/Subtracter  & 16 & - & 15 & - & - \\
-  Subtract  & 15 & - & 15 & - & - \\
-  Multiplier - LUT  & 352 & - & 36 & - & - \\
-  Multiplier - DSP48 & - & - & - & - & 1 \\
-  Divider & 680 & 1 & 150 & 0.5 & 8 \\
+  Adder & 15 & 15 & - & - \\
+  Adder/Subtracter  & $\approx 16$ &  15 & - & - \\
+  Subtract  & 15 &  15 & - & - \\
+  Multiplier - LUT  & 352 &  36 & - & - \\
+  Multiplier - DSP48 & - & - & - & 1 \\
+  Divider & $\approx 177$ & 82 & 0.5 & 7 \\
   \bottomrule
 \end{tabular}
-\caption{Number of logic elements used in average for each operator}
-\label{tab:utilizationofelements}
+\caption{Number of logic elements used in average for each FU}
+\label{tab:apputilizationofelements}
 \end{table}
 
 To create the FSM specification we need to introduce time into the precedence graphs to establish some states. To achieve this scheduling is used. There exists different methods for scheduling and some of these are:
@@ -97,15 +97,30 @@ This is repeated until all nodes have been scheduled and the result is seen in f
 This information is described in \cite{gajski2009}.
 
 \subsection{TC schedule}
-The RC schedule improves the cost of the \todo{find et bedre ord}implementation while the TC intends to improve the performance of the implementation. Again ASAP and ALAP schedules are generated and mobility ranges are found. Then some probabilities are assigned to each operation. These probabilities express the probability for the specified operation to be scheduled in each state in its mobility range e.g. operation 11 in \vref{fig:sch_asap_alap} have $1/3$ probability for being scheduled in each of state 1-3. Figure \vref{fig:tc_prob} shows the probabilities for each operation in figure \vref{fig:sch_asap_alap}.
+The RC schedule improves the cost of the \todo{find et bedre ord}implementation while the TC intends to improve the performance of the implementation. First a maximum number of states is decided and then ASAP and ALAP schedules are generated and mobility ranges are found. Then some probabilities are assigned to each operation. These probabilities express the probability for the specified operation to be scheduled in each state in its mobility range e.g. operation 11 in \vref{fig:sch_asap_alap} have $1/3$ probability for being scheduled in each of state 1-3 if maximum number of states is kept at 8. Figure \vref{fig:tc_prob} shows the probabilities for each operation in figure \vref{fig:sch_asap_alap}.
 \begin{figure}[ht!]
   \centering
   \includegraphics[height=6.5cm]{figures/tcscheprob}
   \caption{Probabilities for each operation in figure \vref{fig:sch_asap_alap}}
   \label{fig:tc_prob}
 \end{figure}
+{\color{gray}Fortsæt med at skrive senere}
 
 
+\section{FSMD design}
+\color{gray}
+\section*{noter til mig selv}
+% ---------------------- udkommentere senere --------****
+Controller <--signaler--> Data path\\
+Controller:\\
+Data path:  indeholder register, FU, connections, network osv.
+
+skal jeg lave et eksempel med en lille del af mit system? så kan man se hvor voldsomt det kan blive og se processen. Derefter kan jeg vise hvad jeg kommer frem til
+
+noter fra møde med peter:\\
+- lifetime analysis \\
+- synchronous diagram
+\color{black}
 
 \newpage
 % precedence graphs --------------------------------------------------------------------------------------------------- --------------------------------------------------------------------------------------------------- --------------------------------------------------------------------------------------------------- --------------------------------------------------------------------------------------------------- --------------------------------------------------------------------------------------------------- --------------------------------------------------------------------------------------------------- --------------------------------------------------------------------------------------------------- --------------------------------------------------------------------------------------------------- 
@@ -235,8 +250,6 @@ The RC schedule improves the cost of the \todo{find et bedre ord}implementation 
 \color{black}
 
 %\section{Optimization}
-
-\section{FSMD design}
 
 \section{VHDL + Simulation}
 

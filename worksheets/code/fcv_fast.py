@@ -5,6 +5,7 @@ import numpy as np
 import time
 from matplotlib import pyplot as plt
 import sys
+# REMEMBER TO CHANGE PATH FOR OTHER PEOPLE!
 sys.path.append('/Users/tt/.virtualenvs/cv/lib/python2.7/site-packages')
 import cv2
 
@@ -15,59 +16,44 @@ def readcolorppm(filename):
     can't handle comments in the file
     '''
     f = open(filename)
-    color = f.readline().splitlines()
+    f.readline().splitlines()
     size_x, size_y = f.readline().split()
-    max = f.readline().splitlines()
+    f.readline().splitlines()
     data = f.read().split()
     data = map(int,data)
     return np.asarray(data).reshape(int(size_y),int(size_x),3)
 
 def rgb2gray(rgb):
+    '''
+    Simple function to
+    '''
     return np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
 
-def sub2ind(array_shape, rows, cols):
-    '''
-    Found on stackoverview
-    '''
-
-    return rows*array_shape[1] + cols
-
-def sub2indWrap(array_shape,rows_arr,cols_arr):
-    '''
-    wrapper for sub2ind
-    '''
-    ind = np.zeros(array_shape)
-
-    for y in range(array_shape[0]):
-        for x in range(array_shape[1]):
-            ind[y][x] = sub2ind(array_shape,y,x)
-
-    return ind.astype(int)
-
 def save_pfm(file, image, scale = 1):
-  color = None
 
-  if image.dtype.name != 'float32':
-    raise Exception('Image dtype must be float32.')
+    color = None
 
-  if len(image.shape) == 3 and image.shape[2] == 3: # color image
-    color = True
-  elif len(image.shape) == 2 or len(image.shape) == 3 and image.shape[2] == 1: # greyscale
-    color = False
-  else:
-    raise Exception('Image must have H x W x 3, H x W x 1 or H x W dimensions.')
+    if image.dtype.name != 'float32':
+        raise Exception('Image dtype must be float32.')
 
-  file.write('PF\n' if color else 'Pf\n')
-  file.write('%d %d\n' % (image.shape[1], image.shape[0]))
+    if len(image.shape) == 3 and image.shape[2] == 3: # color image
+        color = True
+    elif len(image.shape) == 2 or len(image.shape) == 3 and image.shape[2] == 1: # greyscale
+        color = False
+    else:
+        raise Exception('Image must have H x W x 3, H x W x 1 or H x W dimensions.')
 
-  endian = image.dtype.byteorder
+    file.write('PF\n' if color else 'Pf\n')
+    file.write('%d %d\n' % (image.shape[1], image.shape[0]))
 
-  if endian == '<' or endian == '=' and sys.byteorder == 'little':
-    scale = -scale
+    endian = image.dtype.byteorder
 
-  file.write('%f\n' % scale)
+    if endian == '<' or endian == '=' and sys.byteorder == 'little':
+        scale = -scale
 
-  image.tofile(file)
+    file.write('%f\n' % scale)
+
+    image.tofile(file)
 
 # main function:
 if __name__ == '__main__' or True:
@@ -86,7 +72,7 @@ if __name__ == '__main__' or True:
              'ven' : ['data/usable/venl.ppm','data/usable/venr.ppm',32]}
 
     # set constants
-    image = 'mot'
+    image = 'ven'
     al = 0.11
 
     maxDisp = fdict[image][2]
@@ -118,20 +104,17 @@ if __name__ == '__main__' or True:
     # mirror images
     Il_1 = Il[:,::-1,:]
     Ir_1 = Ir[:,::-1,:]
-
-
     Rimg_1 = Rimg[:,::-1,:]
     Limg_1 = Limg[:,::-1,:]
 
-    # compute gradient in X-direction
+    # compute gradient in X-direction and make mirror versions
     fx_l = np.gradient(Ilg)[1]
     fx_r = np.gradient(Irg)[1]
-
     fx_l_1 = fx_l[:,::-1]
     fx_r_1 = fx_r[:,::-1]
 
+    # generate variables
     m, n, c = Il.shape
-
     dispVol = np.ones((m,n,maxDisp))*tB
     dispVol1 = np.ones((m,n,maxDisp))*tB
 
@@ -171,7 +154,6 @@ if __name__ == '__main__' or True:
         # total
         c1_tot = al*c1_color + (1-al)*c1_grad
 
-
         # set values
         dispVol[:,:,d] = c_tot
         dispVol1[:,:,d] = c1_tot[:,::-1]
@@ -179,6 +161,7 @@ if __name__ == '__main__' or True:
 
     print 'Starting Guided image filter. Time taken so far', time.time()-start, 'seconds'
 
+    # Use opencv to perform Guided image filtering
     Il_gf = cv2.ximgproc.createGuidedFilter(Limg,r,eps)
     Ir_gf = cv2.ximgproc.createGuidedFilter(Rimg_1,r,eps)
     q = np.zeros((m,n),dtype=np.float32)
@@ -203,17 +186,15 @@ if __name__ == '__main__' or True:
 
     print 'Starting minimization. Time taken so far', time.time()-start, 'seconds'
 
-    # minimization
+    # minimization / find disparity values
     labels_left = np.argmin(dispVol,axis=2)
     labels_right = np.argmin(dispVol1,axis=2)
 
-    # plt.figure()
-    # plt.imshow(labels_left,cmap=plt.cm.gray)
-    # plt.figure()
-    # plt.imshow(labels_right,cmap=plt.cm.gray)
-
     final_labels = 1*labels_left
 
+    final_labels_orig = 1*final_labels
+
+    # find occlussion
     for y in range(m):
         for x in range(n):
             if np.abs(labels_left[y][x]-labels_right[y][x-labels_left[y][x]])>=lim:
@@ -225,27 +206,36 @@ if __name__ == '__main__' or True:
         for x in range(n):
             if final_labels_filled[y][x] <= 0:
                 final_labels_filled[y][x] = final_labels_filled[y][x-1]
-
-    for y in range(m):
+    for y in range(m): # bord
         for x in range(maxDisp,0,-1):
             if final_labels_filled[y][x] <=0:
                 final_labels_filled[y][x] = final_labels_filled[y][x+1]
 
+    print 'Script ended. Time taken:',time.time()-start,'seconds. Beginning to save files'
 
-    # plt.figure()
-    # plt.imshow(final_labels_filled,cmap=plt.cm.gray)
-
+    # print and save image
     plt.figure()
     plt.imshow(final_labels,cmap=plt.cm.gray)
-    fstr = 'data/res/fcv_norm/'+image+'_fcv_r'+str(r)+'_al'+str(al)+'.jpg'
+    fstr = 'data/res/stvis/'+image+'_fcv.jpg' #_r'+str(r)+'_al'+str(al)+'.jpg'
     plt.imsave(fstr,final_labels,cmap=plt.cm.gray)
     print "image saved as:" + fstr
 
+    # save csv files
+    fstr = 'data/res/stvis/'+image+'_fcv_left_labels.csv'
+    np.savetxt(fstr,labels_left,delimiter=',',fmt='%d')
+    fstr = 'data/res/stvis/'+image+'_fcv_right_labels.csv'
+    np.savetxt(fstr,labels_right,delimiter=',',fmt='%d')
+    fstr = 'data/res/stvis/'+image+'_fcv_w_occ_as_-1.csv'
+    np.savetxt(fstr,final_labels,delimiter=',',fmt='%d')
+    fstr = 'data/res/stvis/'+image+'_fcv_w_occ_filled_by_nda.csv'
+    np.savetxt(fstr,final_labels_filled,delimiter=',',fmt='%d')
+
+    # save the ouput as .pfm if pfm files exist for the images
     if image == 'mot':
-        fstr = 'data/res/fcv_norm/'+image+'_fcv_r'+str(r)+'_al'+str(al)+'.pfm'
+        fstr = 'data/res/stvis/'+image+'_fcv.pfm'
         file = open(fstr,'wb')
         save_pfm(file, final_labels_filled.astype('float32'), scale = 1)
         file.close()
 
     plt.close("all")
-    print 'Script ended. Time taken:',time.time()-start,'seconds'
+    print 'Saving done'

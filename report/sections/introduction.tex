@@ -1,33 +1,19 @@
 \chapter{Introduction}\label{ch:introduction}
-In this chapter, the project is introduced and motivated. Furthermore, a brief description is presented for stereo vision and the use for it at HSA systems \todo{Måske anden formulering}. Lastly, this chapter also describes a delimitation of the project and report.\\
+In this chapter, the project is introduced and motivated. Furthermore, a brief description is presented for stereo vision and the use for it at HSA systems. Lastly, this chapter also describes a delimitation of the project and report.\\
 
 \section{Stereo vision introduction}
-% VERSION WITH Euclid
-In 280 A.D the greek mathematician Euclid described the perception  \cite{lit:historyofstereophoto}
+In 280 A.D the greek mathematician Euclid noticed that the perception of depth is caused by each eye receiving a dissimilar image of the same object. Throughout history different people have been working on this this concept. In 1933 Sir Charles Wheatstone began mimic and forced the perception of depth by developing the stereoscope. The stereoscope use images taken by two cameras placed next to each other and the stereoscope then isolated the images so each eye only see one image. This mimics the depth perception and the viewer would be able to see depth in the images. \cite{lit:historyofstereophoto}\\
 
-% OLD VERSION
-% Stereopsis -> binocular vision -> 
-Human has the incredible ability of depth perception. This is due to our two eyes which are separated a bit from each other. Since the eyes are separated they each receive different images. These images are combined in the brain and enable us to perceive depth. This is shown on figure \ref{fig:humanviscones}. 
+Beginning around 1970 computer vision began appearing and a big part of this area is stereo vision, the measurement of depth mimicing the human vision using two cameras \cite{Szeliski2010}. The ability to measure depths enables a computer to distinguish between objects and hence better interact and react on the world.\\
 
-\begin{figure}
-  \centering
-  \includegraphics[height=5cm]{figures/stereovisionhuman}
-  \caption{Example of human stereo vision \cite{lit:Stereovision3d}}
-  \label{fig:humanviscones}
-\end{figure}
-
-This concept can be used in computer system and enable a system to perceive depth and hence distinguish between different objects.\\
-
-Use of stereo vision:\\
-Giving the ability of distinguishing between objects to a computer system gives the system the ability to perform more task. These task includes counting number of people entering pass through a secure door, enables a robot arm to interact with different objects.\\
-
-HSA systems wish to keep an eye on packages going through their system. A strategically placed stereo vision camera will enable them to know how many and where these objects are in the system. 
+HSA systems wish to follow packages going through their system. A strategically placed stereo vision camera will enable them to know how many and where these packages are in the system. In case of errors and the like the printer system is the able to notice when the conveyor belt is empty and ready to reset.\\
+In future uses HSA system would like the stereo vision system to have very precise depth measurements of \SI{2}{\milli\meter}.
 
 \section{Motivation}
-Stereo vision algorithms usually are very heavy computational wise. A high resolution real-time stereo vision can be hard to acquire. 
+The area of stereo vision have be researched thoroughly and precise algorithms have been found but most algorithms are very heavy computational wise. HSA system wish for a stereo vision system which can run real-time (10 fps) and have a high precision of 2 mm.
 
 \section{Problem Introduction}
-HSA systems wish to keep an eye on packages going through their system. A strategically placed stereo vision camera will enable them to know how many and where these objects are in the system. 
+HSA systems wish to follow packages going through their system. A strategically placed stereo vision camera will enable them to know how many and where these objects are in the system. 
 The primary objectives of this is to:
 \begin{itemize}
   \item Analyze obstacles within stereo vision
@@ -37,8 +23,7 @@ The primary objectives of this is to:
 
 
 \section{Delimitation}
-This project is mainly concerned with the design and implementation of a hardware design for a FPGA. This project will not focus on developing a new stereo vision algorithm. Obstacles and issue with stereo algorithms will not be 
-
+This project is mainly concerned with the design and implementation of a hardware design for a FPGA. This project will not focus on developing a new stereo vision algorithm. Obstacles and issue with stereo algorithms will be analyzed but simpler solution will be used for most obstacles.
 
 \section{Report Structure and Design Process}
 
@@ -49,7 +34,10 @@ This project is mainly concerned with the design and implementation of a hardwar
   \label{fig:A3 model}
 \end{figure}
 
-The A3 methodology is a way to handle a system design. Figure 1 shows a diagram of the A3 method.  As seen it consist of 3 spaces: Application, Algorithm, and Architecture. The report will follow this structure where chapter \ref{ch:appanalysis}: Application Analysis will explore the Application space and chapter \ref{ch:req}: Requirements will contain a specification for moving into the Algorithm space. 
+The A$^3$ model is a basic design model used internally at AAU and is illustrated on figure \vref{fig:A3 model}. The model consist of tree design domains which it will explore and it will help structure this report. These domains are Application, Algorithm and Architecture.\\
+The search for a solution starts in the application domain where \\~\\
+
+ is a way to handle a system design. Figure 1 shows a diagram of the A$^3$ method.  As seen it consist of 3 spaces: Application, Algorithm, and Architecture. The report will follow this structure where chapter \ref{ch:appanalysis}: Application Analysis will explore the Application space and chapter \ref{ch:req}: Requirements will contain a specification for moving into the Algorithm space. 
 Chapter \ref{ch:alganalysis}: Algorithm Analysis will explore the algorithm space with the requirements as constraints. The chapter will conclude in the choice of an algorithm to be implemented on the hardware.
 Chapter \ref{ch:designmet}: Design methodology will describe different methods which can be used to move from the algorithm space to the architecture space.
 Chapter \ref{ch:archdesign}: Architecture Design will explore the architecture space based on the chosen algorithm. The chapter will result in a implementation of the design on the hardware platform.
