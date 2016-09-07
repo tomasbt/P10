@@ -26,20 +26,24 @@ The primary objectives of this is to:
 This project is mainly concerned with the design and implementation of a hardware design for a FPGA. This project will not focus on developing a new stereo vision algorithm. Obstacles and issue with stereo algorithms will be analyzed but simpler solution will be used for most obstacles.
 
 \section{Report Structure and Design Process}
-
+The A$^3$ model is a basic design model used internally at AAU and is illustrated on figure \vref{fig:A3model}. The model consist of tree design domains which it will explore and it will help structure this report. These domains are Application, Algorithm and Architecture.\\
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=0.25\textwidth]{figures/A3model.jpg}
-  \caption{A3 model}
-  \label{fig:A3 model}
+  \includegraphics[scale=0.25]{figures/A3model.jpg}
+  \caption{A$^3$ model}
+  \label{fig:A3model}
 \end{figure}
 
-The A$^3$ model is a basic design model used internally at AAU and is illustrated on figure \vref{fig:A3 model}. The model consist of tree design domains which it will explore and it will help structure this report. These domains are Application, Algorithm and Architecture.\\
-The search for a solution starts in the application domain where \\~\\
+The search for a solution starts in the application domain where the problem and application are being explored. Chapter \vref{ch:appanalysis}: Application Analysis will explore the Application domain and the resulting specification for the application are presented in chapter \vref{ch:req}. In this project not a lot of applications are explored since the problem and the wanted application have been given by HSA system.\\~\\
+When moving to a new domain it can result in landing in different areas of the domain as seen on figure \vref{fig:A3model}. The solid arrows goes from a single point in the preceding domain and spreads out to different points in the current domain and these different points can, in the case of the algorithm domain, represent different algorithms. Chapter \vref{ch:alganalysis} will explore the algorithm domain.\\~\\
+Chapter \vref{ch:designmet} will described a methodology to go from a algorithm in the algorithm domain to some hardware architecture in the architecture domain.\\~\\
+Notice the dashed arrows in figure \vref{fig:A3model}. These arrows shows that when you are exploring some domains new information might be given which require you to go back to a former domain and change the found specification etc. and then start moving to a new domain from new.\\~\\
+Chapter \vref{ch:acctest} will test whether the found solution comply with the requirements in \vref{ch:req} and chapter \vref{ch:conclusion} will conclude the project and its findings. 
 
- is a way to handle a system design. Figure 1 shows a diagram of the A$^3$ method.  As seen it consist of 3 spaces: Application, Algorithm, and Architecture. The report will follow this structure where chapter \ref{ch:appanalysis}: Application Analysis will explore the Application space and chapter \ref{ch:req}: Requirements will contain a specification for moving into the Algorithm space. 
-Chapter \ref{ch:alganalysis}: Algorithm Analysis will explore the algorithm space with the requirements as constraints. The chapter will conclude in the choice of an algorithm to be implemented on the hardware.
-Chapter \ref{ch:designmet}: Design methodology will describe different methods which can be used to move from the algorithm space to the architecture space.
-Chapter \ref{ch:archdesign}: Architecture Design will explore the architecture space based on the chosen algorithm. The chapter will result in a implementation of the design on the hardware platform.
+
+% is a way to handle a system design. Figure 1 shows a diagram of the A$^3$ method.  As seen it consist of 3 spaces: Application, Algorithm, and Architecture. The report will follow this structure where chapter : Application Analysis will explore the Application space and chapter \ref{ch:req}: Requirements will contain a specification for moving into the Algorithm space. 
+%Chapter \ref{ch:alganalysis}: Algorithm Analysis will explore the algorithm space with the requirements as constraints. The chapter will conclude in the choice of an algorithm to be implemented on the hardware.
+%Chapter \ref{ch:designmet}: Design methodology will describe different methods which can be used to move from the algorithm space to the architecture space.
+%Chapter \ref{ch:archdesign}: Architecture Design will explore the architecture space based on the chosen algorithm. The chapter will result in a implementation of the design on the hardware platform.
 
 
