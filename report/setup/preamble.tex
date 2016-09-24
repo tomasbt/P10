@@ -48,6 +48,10 @@
 % load a colour package
 \usepackage{xcolor}
 \definecolor{aaublue}{RGB}{33,26,82}% dark blue
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{tgray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{dkred}{rgb}{0.6,0,0}
 % The standard graphics inclusion package
 \usepackage{graphicx}
 % Set up how figure and table captions are displayed
@@ -181,3 +185,34 @@
 \usepackage{varioref}
 
 \usepackage{siunitx}
+
+% for code snippets
+\usepackage{listings}
+
+\lstdefinelanguage{VHDL}{
+  morekeywords=[1]{
+    library,use,all,entity,is,port,in,out,end,architecture,of,
+    begin,and,when,case,if,then,else,process 
+  },
+  morekeywords=[2]{rising_edge},
+  morecomment=[l]--,
+  morestring=[b]'
+}
+
+\lstset{frame=tb,
+  language=VHDL,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=[1]\color{mauve},
+  keywordstyle=[2]\color{dkred},
+  commentstyle=\color{gray},
+  stringstyle=\color{orange},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}

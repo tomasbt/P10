@@ -107,7 +107,81 @@ The RC schedule improves the cost of the \todo{find et bedre ord}implementation 
 {\color{gray}Fortsæt med at skrive senere}
 
 
-\section{FSMD design}
+\section{Finite State Machine with Data Path design}
+\subsection{FSMD example}
+This section will contain an example of a FSMD design example but only of a small part of the system to show have to design a FSMD but also to show that it is a really extensive process. For this example the $b$ block (see figure \vref{fig:b_par}) from the guided image filter (see figure \vref{fig:Guided_image_filter}) and it is shown here on figure \vref{fig:b_FSMD_1}.
+\todo{tjek op på synkront dataflow diagram og state diagram}
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[t]{0.45\textwidth}
+    \centering\includegraphics[scale=0.4]{figures/b_FSMD_1}
+    \caption{$b$ block\label{fig:b_FSMD_1}}
+  \end{subfigure}\hspace{0.5cm}
+  \begin{subfigure}[t]{0.45\textwidth}
+    \centering\includegraphics[scale=0.4]{figures/b_FSMD_SSD}
+    \caption{Synchronous State Diagram of the $b$ block\label{fig:b_FSMD_SSD}}
+  \end{subfigure}
+  \caption{$b$ block FSMD stuff\label{fig:b_FSMD_1_all}}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[scale=0.225]{figures/b_FSMD_SSD_extended}
+  \caption{Synchronous State Diagram with every connection, functional units, in- and outputs named}
+  \label{fig:b_FSMD_SSD_ext}
+\end{figure}
+
+
+\begin{table}[ht!]
+  \centering
+  \begin{tabular}{r | c | c}
+  \toprule
+  & S$_1$ & S$_2$\\
+  \midrule
+  I$_1$ & $\surd$ & \\
+  I$_2$ & $\surd$ & \\
+  I$_3$ & & $\surd$ \\
+  m$_{\text{out}}$ & & $\surd$ \\
+  O & & $\surd$
+  \end{tabular}
+  \caption{Life-time analysis}
+  \label{tab:b_FSMD_lifetime_anal}
+\end{table}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[scale=0.3]{figures/b_FSMD_full}
+  \caption{Finite State Machine with Data path and the design of the data path is shown.}
+  \label{fig:b_FSMD_full}
+\end{figure}
+\todo{tænk i register! transfer! level og ikke i FSMD}
+\begin{lstlisting}
+-- test
+...
+begin
+  process (clk)  -- Sequential process
+  begin 
+    if rising_edge(clk) then
+      state <= next_state;
+    end if;
+  end process;
+  
+  process (state, reset, cars, short, long)  -- Combinational process
+  begin
+    if reset = '1' then
+      next_state <= S1;
+    else
+      case state is
+        when S1 =>
+          m_out = I_1 * I_2;
+        when S2 =>
+          r_2 <= m_out;
+          O <= r_2-I_3;
+      end case;
+    end if;
+  end process;      
+\end{lstlisting}
+
 \color{gray}
 \section*{noter til mig selv}
 % ---------------------- udkommentere senere --------****

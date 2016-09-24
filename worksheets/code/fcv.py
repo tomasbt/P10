@@ -7,7 +7,7 @@ import time
 # sys.path.append('/Users/tt/.virtualenvs/cv/lib/python2.7/site-packages')
 # import cv2
 from matplotlib import pyplot as plt
-# import numpy.matlib as ml
+import numpy.matlib as ml
 
 
 def readcolorppm(filename):

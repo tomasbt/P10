@@ -72,7 +72,7 @@ if __name__ == '__main__' or True:
              'ven' : ['data/usable/venl.ppm','data/usable/venr.ppm',32]}
 
     # set constants
-    image = 'ven'
+    image = 'tsu'
     al = 0.11
 
     maxDisp = fdict[image][2]
@@ -221,14 +221,14 @@ if __name__ == '__main__' or True:
     print "image saved as:" + fstr
 
     # save csv files
-    fstr = 'data/res/stvis/'+image+'_fcv_left_labels.csv'
-    np.savetxt(fstr,labels_left,delimiter=',',fmt='%d')
-    fstr = 'data/res/stvis/'+image+'_fcv_right_labels.csv'
-    np.savetxt(fstr,labels_right,delimiter=',',fmt='%d')
-    fstr = 'data/res/stvis/'+image+'_fcv_w_occ_as_-1.csv'
-    np.savetxt(fstr,final_labels,delimiter=',',fmt='%d')
-    fstr = 'data/res/stvis/'+image+'_fcv_w_occ_filled_by_nda.csv'
-    np.savetxt(fstr,final_labels_filled,delimiter=',',fmt='%d')
+#    fstr = 'data/res/stvis/'+image+'_fcv_left_labels.csv'
+#    np.savetxt(fstr,labels_left,delimiter=',',fmt='%d')
+#    fstr = 'data/res/stvis/'+image+'_fcv_right_labels.csv'
+#    np.savetxt(fstr,labels_right,delimiter=',',fmt='%d')
+#    fstr = 'data/res/stvis/'+image+'_fcv_w_occ_as_-1.csv'
+#    np.savetxt(fstr,final_labels,delimiter=',',fmt='%d')
+#    fstr = 'data/res/stvis/'+image+'_fcv_w_occ_filled_by_nda.csv'
+#    np.savetxt(fstr,final_labels_filled,delimiter=',',fmt='%d')
 
     # save the ouput as .pfm if pfm files exist for the images
     if image == 'mot':
@@ -237,5 +237,5 @@ if __name__ == '__main__' or True:
         save_pfm(file, final_labels_filled.astype('float32'), scale = 1)
         file.close()
 
-    plt.close("all")
+#    plt.close("all")
     print 'Saving done'
