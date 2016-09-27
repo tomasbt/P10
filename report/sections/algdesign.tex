@@ -1,9 +1,8 @@
 \chapter{Algorithm design} \label{ch:alganalysis}
-\todo{ROUGH SKETCH not done yet}
-
-In this chapter the two stereo vision algorithms, Efficient Edge Preserving Stereo Matching (EEPSM) and Fast Cost-Volume Matching (FCV), is described. Lastly, a simulation of each algorithm is created and the results of these simulations are compared and from this, an algorithm is chosen.
+This chapter will describe the two stereo vision algorithms, Efficient Edge Preserving Stereo Matching (EEPSM) and Fast Cost-Volume Matching (FCV). Lastly, a simulation of each algorithm is created and the results of these simulations are compared and from this, an algorithm is chosen.
 
 \section{Efficient Edge Preserving Stereo Matching:}
+This is an algorithm developed 
 This algorithm works in three steps. The first step is calculating a cost for each pixel and disparity. This cost is a combination of the sum of absolute differences and hamming distance of the census transform around each pixel.
 \begin{flalign}
 && C^{SAD}_d(x,y) &=  \sum^3_{i=1}| I_{left}(x,y,i) - I_{right}(x+d,y,i) |  &&\\

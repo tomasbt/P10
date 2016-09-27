@@ -1,16 +1,16 @@
 \chapter{Introduction}\label{ch:introduction}
 In this chapter, the project is introduced and motivated. Furthermore, a brief description is presented for stereo vision and the use for it at HSA systems. Lastly, this chapter also describes a delimitation of the project and report.\\
 
-\section{Stereo vision introduction}
+\section{Stereo vision introduction}\label{sec:stereo vision}
 In 280 A.D the greek mathematician Euclid noticed that the perception of depth is caused by each eye receiving a dissimilar image of the same object. Throughout history different people have been working on this this concept. In 1933 Sir Charles Wheatstone began mimic and forced the perception of depth by developing the stereoscope. The stereoscope use images taken by two cameras placed next to each other and the stereoscope then isolated the images so each eye only see one image. This mimics the depth perception and the viewer would be able to see depth in the images. \cite{lit:historyofstereophoto}\\
 
 Beginning around 1970 computer vision began appearing and a big part of this area is stereo vision, the measurement of depth mimicing the human vision using two cameras \cite{Szeliski2010}. The ability to measure depths enables a computer to distinguish between objects and hence better interact and react on the world.\\
 
 HSA systems wish to follow packages going through their system. A strategically placed stereo vision camera will enable them to know how many and where these packages are in the system. In case of errors and the like the printer system is the able to notice when the conveyor belt is empty and ready to reset.\\
-In future uses HSA system would like the stereo vision system to have very precise depth measurements of \SI{2}{\milli\meter}.
+In future uses HSA system would like the stereo vision system to have very precise depth measurements of \SI{\leq 2}{\milli\meter} in the distances between 0.5-1.5 m.
 
-\section{Motivation}
-The area of stereo vision have be researched thoroughly and precise algorithms have been found but most algorithms are very heavy computational wise. HSA system wish for a stereo vision system which can run real-time (10 fps) and have a high precision of 2 mm.
+\section{Motivation}\label{sec:intromotiv}
+The area of stereo vision have be researched thoroughly and precise algorithms have been found but most algorithms are very heavy computational wise. HSA system wish for a stereo vision system which can run real-time (10 fps) and have a high precision of \SI{\leq 2}{\milli\meter} between 0.5 m and 1.5.
 
 \section{Problem Introduction}
 HSA systems wish to follow packages going through their system. A strategically placed stereo vision camera will enable them to know how many and where these objects are in the system. 
@@ -20,7 +20,6 @@ The primary objectives of this is to:
   \item Analyze different stereo algorithms
   \item Design and optimize an architecture for executing stereo vision 
 \end{itemize}
-
 
 \section{Delimitation}
 This project is mainly concerned with the design and implementation of a hardware design for a FPGA. This project will not focus on developing a new stereo vision algorithm. Obstacles and issue with stereo algorithms will be analyzed but simpler solution will be used for most obstacles.
@@ -39,11 +38,5 @@ When moving to a new domain it can result in landing in different areas of the d
 Chapter \vref{ch:designmet} will described a methodology to go from a algorithm in the algorithm domain to some hardware architecture in the architecture domain.\\~\\
 Notice the dashed arrows in figure \vref{fig:A3model}. These arrows shows that when you are exploring some domains new information might be given which require you to go back to a former domain and change the found specification etc. and then start moving to a new domain from new.\\~\\
 Chapter \vref{ch:acctest} will test whether the found solution comply with the requirements in \vref{ch:req} and chapter \vref{ch:conclusion} will conclude the project and its findings. 
-
-
-% is a way to handle a system design. Figure 1 shows a diagram of the A$^3$ method.  As seen it consist of 3 spaces: Application, Algorithm, and Architecture. The report will follow this structure where chapter : Application Analysis will explore the Application space and chapter \ref{ch:req}: Requirements will contain a specification for moving into the Algorithm space. 
-%Chapter \ref{ch:alganalysis}: Algorithm Analysis will explore the algorithm space with the requirements as constraints. The chapter will conclude in the choice of an algorithm to be implemented on the hardware.
-%Chapter \ref{ch:designmet}: Design methodology will describe different methods which can be used to move from the algorithm space to the architecture space.
-%Chapter \ref{ch:archdesign}: Architecture Design will explore the architecture space based on the chosen algorithm. The chapter will result in a implementation of the design on the hardware platform.
 
 
