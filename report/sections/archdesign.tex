@@ -1,6 +1,20 @@
 \chapter{Architecture design} \label{ch:archdesign}
-\todo{NOT DONE! rough sketch. De nedenstående trin er hvad jeg skal igennem: Para. Anal., Alloc., Optimizaiton, FSMD og VHDL + simulering }
-This chapter will describe the design process for the hardware architecture. In section \ref{sec:ParaAnal} a parallelism analysis is performed. Section \ref{sec:AllocSched} will describe the allocation and scheduling of the hardware elements.
+
+This chapter will explore the architecture domain in the a$^3$ model described in section \vref{sec:a3model} and it is the domain marked on figure \vref{fig:a3arch}. The design process in this chapter\\
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[scale=0.25]{figures/a3arch}
+  \caption{A$^3$ model with the architecture domain marked}
+  \label{fig:arch}
+\end{figure}
+
+Chapter \vref{ch:hardware} have explored the structural domain at the highest abstraction level
+and the next highest abstraction level in the bahivoural domain have be explored in chapter \vref{ch:algdesign} where a algorithm were described and chosen. This chapter will start by exploring the next highest level in the structural domain of the Gajski-Kuhn Y-chart.
+
+figure \vref{fig:??} shows the guided image filter
+
+To simplify this chapter only a gray scale version of the guided image filter will be looked at. Figure \vref{fig:gifdia} shows the guided image filter and the blocks it consists of. 
+
 
 \section{Parallelism Analysis}\label{sec:paraanal}
 The inherent parallelism of the system has been analyzed to find out which improvements can be made. Figure xx shows a diagram of the whole system and on the following pages, data flow graphs (DFG) for each subsystem can be found. \\

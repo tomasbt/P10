@@ -1,13 +1,8 @@
-\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ ROUGH SKETCH not done yet}{23}{section*.20}
-\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ simulation af de 2 algorithmer og samlign resultaterne.}{25}{section*.21}
-\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ Nok en anden titel til denne sektion. Skriv hvilken algorithme jeg g\IeC {\r a}r videre med}{25}{section*.22}
-\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ beskriv Zynq platformen. kom ind p\IeC {\r a} hvad den indeholder}{27}{section*.23}
-\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ bedre navn og cite ds190 product specification og m\IeC {\r a}ske trm?}{27}{section*.25}
-\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ FPGA contraints ==> C = f(A, T, P, N), Lav en tabel}{27}{section*.26}
-\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ l\IeC {\ae }s om system design methodologies i gajski's \textbf {Embedded Systems Design - Modeling, Synthesis and Verification} og beskriv Platform Methodology}{29}{section*.27}
-\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ NOT DONE! rough sketch. De nedenst\IeC {\r a}ende trin er hvad jeg skal igennem: Para. Anal., Alloc., Optimizaiton, FSMD og VHDL + simulering }{33}{section*.29}
-\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ lav om til operation og husk mult}{35}{section*.32}
-\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ find et bedre ord}{37}{section*.35}
-\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ tjek op p\IeC {\r a} synkront dataflow diagram og state diagram}{37}{section*.37}
-\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ t\IeC {\ae }nk i register! transfer! level og ikke i FSMD}{37}{section*.42}
-\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ udf\IeC {\o }r accept test udfra test specifikationen (brug data fra python simulering og giv det til VHDL implementationen)}{43}{section*.54}
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ beskriv Zynq platformen. kom ind p\IeC {\r a} hvad den indeholder}{33}{section*.25}
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ bedre navn og cite ds190 product specification og m\IeC {\r a}ske trm?}{33}{section*.27}
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ FPGA contraints ==> C = f(A, T, P, N), Lav en tabel}{33}{section*.28}
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ lav om til operation og husk mult}{41}{section*.34}
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ find et bedre ord}{43}{section*.37}
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ tjek op p\IeC {\r a} synkront dataflow diagram og state diagram}{44}{section*.39}
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ t\IeC {\ae }nk i register! transfer! level og ikke i FSMD}{44}{section*.44}
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ udf\IeC {\o }r accept test udfra test specifikationen (brug data fra python simulering og giv det til VHDL implementationen)}{51}{section*.56}

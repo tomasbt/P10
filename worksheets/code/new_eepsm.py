@@ -85,16 +85,7 @@ def permeability(img,x,y,sigma=0.5,direct='r'):
         # Error
         return None
 
-# Generate random test image ---------------------------------------------------
-def ranTestImg(imgh,imgv,maxVal,disp,mDisp):
-    '''
-    Generate a random test image
-    '''
-    Limg = np.ceil(maxVal*np.random.rand(imgv,imgh))
 
-    Rimg = np.append(Limg[:,disp:],np.ceil(maxVal*np.random.rand(imgv,disp)),axis=1)
-
-    return Limg, Rimg
 
 # C SAD calc -------------------------------------------------------------------
 def c_sad_calc(pxL,pxR):
@@ -104,52 +95,61 @@ def c_sad_calc(pxL,pxR):
 
     return
 
-'''
-Save a Numpy array to a PFM file.
-'''
+
 def save_pfm(file, image, scale = 1):
-  color = None
 
-  if image.dtype.name != 'float32':
-    raise Exception('Image dtype must be float32.')
+    color = None
 
-  if len(image.shape) == 3 and image.shape[2] == 3: # color image
-    color = True
-  elif len(image.shape) == 2 or len(image.shape) == 3 and image.shape[2] == 1: # greyscale
-    color = False
-  else:
-    raise Exception('Image must have H x W x 3, H x W x 1 or H x W dimensions.')
+    if image.dtype.name != 'float32':
+        raise Exception('Image dtype must be float32.')
 
-  file.write('PF\n' if color else 'Pf\n')
-  file.write('%d %d\n' % (image.shape[1], image.shape[0]))
+    if len(image.shape) == 3 and image.shape[2] == 3: # color image
+        color = True
+    elif len(image.shape) == 2 or len(image.shape) == 3 and image.shape[2] == 1: # greyscale
+        color = False
+    else:
+        raise Exception('Image must have H x W x 3, H x W x 1 or H x W dimensions.')
 
-  endian = image.dtype.byteorder
+    file.write('PF\n' if color else 'Pf\n')
+    file.write('%d %d\n' % (image.shape[1], image.shape[0]))
 
-  if endian == '<' or endian == '=' and sys.byteorder == 'little':
-    scale = -scale
+    endian = image.dtype.byteorder
 
-  file.write('%f\n' % scale)
+    if endian == '<' or endian == '=' and sys.byteorder == 'little':
+        scale = -scale
 
-  image.tofile(file)
+    file.write('%f\n' % scale)
+
+    image.tofile(file)
 
 # main loop --------------------------------------------------------------------################
 if __name__ == "main" or True:
 
     start = time.time()
+    # filenames
+    fdict = {'con' : ['data/usable/conl.ppm','data/usable/conr.ppm',59],
+             'conf' : ['data/usable/conlf.ppm','data/usable/conrf.ppm',59*4],
+             'ted' : ['data/usable/tedl.ppm','data/usable/tedr.ppm',59],
+             'tedf' : ['data/usable/tedlf.ppm','data/usable/tedrf.ppm',59*4],
+             'mot' : ['data/usable/motl.ppm','data/usable/motr.ppm',70],
+             'tsu' : ['data/usable/tsul.ppm','data/usable/tsur.ppm',30],
+             'nku' : ['data/usable/nkul.ppm','data/usable/nkur.ppm',130],
+             'ven' : ['data/usable/venl.ppm','data/usable/venr.ppm',32]}
 
-    imgSz = 300
-    maxval = 30
-    CDisp = 3
+    # set constants
+    image = 'con'
+
     al = 0.5
-    maxDisp = 70
-    consistancy_check = False
+    maxDisp = fdict[image][2]
+    consistancy_check = True
     savefilename = 'test111.pfm'
 
-    # Limg, Rimg = ranTestImg(360,288,maxval,CDisp,maxDisp)
-    Limg = readcolorppm('data/iml.ppm')
-    Rimg = readcolorppm('data/imr.ppm')
-    # Limg = plt.imread('data/iml.png')
-    # Rimg = plt.imread('data/imr.png')
+    fnamel = fdict[image][0]
+    fnamer = fdict[image][1]
+
+    # load images and normalise the data
+    Limg = readcolorppm(fnamel)
+    Rimg = readcolorppm(fnamer)
     LimgG = np.floor(rgb2gray(Limg))
     RimgG = np.floor(rgb2gray(Rimg))
 
@@ -364,22 +364,16 @@ if __name__ == "main" or True:
                 dispmap2[y][x] = np.argmin(total_aggre[y][x])
                 if np.abs(dispmap2[y][x]-dispmap[y][x]) > 3:
                     dispmap[y][x] = 0
-
-    plt.imshow(dispmap)
-    file = open(savefilename,'w')
-    save_pfm(file, dispmap.astype('float32'), scale = 1)
-    file.close()
     print 'time taken:', time.time()-start,'secs'
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-# # DARGH
+
+    plt.figure()
+    fstr = 'data/res/report/'+image+'_eepsm.png'
+    plt.imsave(fstr,dispmap,cmap=plt.cm.gray)
+    print "image saved as:" + fstr
+
+    if image == 'mot':
+        fstr = 'data/res/stvis/'+image+'_eepsm.pfm'
+        file = open(fstr,'wb')
+        save_pfm(file, dispmap.astype('float32'), scale = 1)
+        file.close()
+        print "image saved as:" + fstr

@@ -40,78 +40,17 @@ def load_pfm(file):
 
   return np.reshape(data, shape), scale
 
-'''
-Save a Numpy array to a PFM file.
-'''
-def save_pfm(filename, image, scale = 1):
-  color = None
-
-  file = open(filename,'w')
-
-  if image.dtype.name != 'float32':
-    raise Exception('Image dtype must be float32.')
-
-  if len(image.shape) == 3 and image.shape[2] == 3: # color image
-    color = True
-  elif len(image.shape) == 2 or len(image.shape) == 3 and image.shape[2] == 1: # greyscale
-    color = False
-  else:
-    raise Exception('Image must have H x W x 3, H x W x 1 or H x W dimensions.')
-
-  file.write('PF\n' if color else 'Pf\n')
-  file.write('%d %d\n' % (image.shape[1], image.shape[0]))
-
-  endian = image.dtype.byteorder
-
-  if endian == '<' or endian == '=' and sys.byteorder == 'little':
-    scale = -scale
-
-  file.write('%f\n' % scale)
-
-  image.tofile(file)
-
-  file.close()
-
-  return
-
-def read_pgm(filename, byteorder='>'):
-    """Return image data from a raw PGM file as numpy array.
-
-    Format specification: http://netpbm.sourceforge.net/doc/pgm.html
-
-    Gain from STACK OVERFLOW
-    """
-    with open(filename, 'rb') as f:
-        buffer = f.read()
-    try:
-        header, width, height, maxval = re.search(
-            b"(^P5\s(?:\s*#.*[\r\n])*"
-            b"(\d+)\s(?:\s*#.*[\r\n])*"
-            b"(\d+)\s(?:\s*#.*[\r\n])*"
-            b"(\d+)\s(?:\s*#.*[\r\n]\s)*)", buffer).groups()
-    except AttributeError:
-        raise ValueError("Not a raw PGM file: '%s'" % filename)
-    return np.frombuffer(buffer,
-                            dtype='int', #'u1' if int(maxval) < 256 else byteorder+'u2',
-                            count=int(width)*int(height),
-                            offset=len(header)
-                            ).reshape((int(height), int(width)))
-
-
 if __name__ == 'main' or True:
 
-    f = open('disp0GT.pfm')
+    f = open('data/mot_GT.pfm')
     img, s = load_pfm(f)
     f.close()
 
     f = open('data/res/fcv_norm/mot_fcv_r9_al0.11.pfm')
     img2, s2 = load_pfm(f)
     f.close()
-    
+
     img = np.flipud(img)
-
-    # img2 = read_pgm('testf.pgm')
-
 
     if img.shape == img2.shape:
         print 'same shape'
@@ -140,7 +79,3 @@ if __name__ == 'main' or True:
     plt.imshow(img)
     plt.figure()
     plt.imshow(img2)
-
-
-    # img[np.isinf(img)]=0
-    # print np.max(img)

@@ -125,8 +125,6 @@ def myBF(data,r):
     '''
     my implementation of a box filter
 
-    WORKING AS INTENDED
-
     input:
         data : the data being filtered
         r : window size / radius
@@ -156,15 +154,6 @@ def myBF(data,r):
 
 if __name__ == '__main__' or True:
 
-    # imdata = np.asarray([[16, 2, 3, 13],[5, 11, 1, 8],[9, 7, 6, 12],[4, 14, 15, 1]])
-
-    # imdata = np.asarray([[35,1,6,26,19,24],
-    #                     [3,32,7,21,23,25],
-    #                     [31,9,2,22,27,20],
-    #                     [8,28,33,17,10,15],
-    #                     [30,5,34,12,14,16],
-    #                     [4,36,29,13,18,11]])
-
     start = time.time()
     al = 0.5
     maxDisp = 30
@@ -172,26 +161,13 @@ if __name__ == '__main__' or True:
     eps = 0.0001
     lim = 2
 
-    # Limg = cv2.imread('data/tsukuba/tsconl.ppm')
-    # Rimg = cv2.imread('data/tsukuba/tsconr.ppm')
-    # LimgG = cv2.cvtColor(Limg, cv2.COLOR_BGR2GRAY)
-    # RimgG = cv2.cvtColor(Rimg, cv2.COLOR_BGR2GRAY)
     Limg = readcolorppm('data/tsukuba/tsconl.ppm')
     Rimg = readcolorppm('data/tsukuba/tsconr.ppm')
     LimgG = np.floor(rgb2gray(Limg))
     RimgG = np.floor(rgb2gray(Rimg))
 
-    print time.time()-start
-
     Lgrad = np.gradient(LimgG)
     Rgrad = np.gradient(RimgG)
-
-    # print time.time()-start
-
-    # LimgGF = cv2.ximgproc.createGuidedFilter(Limg,r,eps)
-    # RimgGF = cv2.ximgproc.createGuidedFilter(Rimg,r,eps)
-
-    # print time.time()-start
 
     costMat = np.zeros(LimgG.shape+(maxDisp,),np.float32)
     costMat1 = np.zeros(LimgG.shape+(maxDisp,),np.float32)
@@ -208,14 +184,8 @@ if __name__ == '__main__' or True:
                     (1-al)*(np.abs(Lgrad[1][y][x]-Rgrad[1][y][x-d])+ \
                     np.abs(Lgrad[0][y][x]-Rgrad[0][y][x-d]))
 
-    print time.time()-start
     dispvol = np.zeros((maxDisp,)+LimgG.shape,np.float32)
     dispvol1 = np.zeros((maxDisp,)+LimgG.shape,np.float32)
-    # for d in range(maxDisp):
-    #     RimgGF.filter(costMat[:,:,d],dispvol[d])
-    #     LimgGF.filter(costMat1[:,:,d],dispvol1[d])
-
-    print 'STARTING my GUIDED filter '
 
     for d in range(maxDisp):
         dispvol[d,:,:] = myGIF(Rimg,costMat[:,:,d],r,eps)

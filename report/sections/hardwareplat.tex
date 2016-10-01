@@ -1,5 +1,6 @@
-\chapter{Platform Analysis} \label{ch:plaanalysis}
-\todo{beskriv Zynq platformen. kom ind på hvad den indeholder}
+\chapter{Platform analysis} \label{ch:plaanalysis}
+This chapter describes the hardware platform provided for this project. HSA systems have provided a ZedBoard development board \cite{zedboard} for the project. The Zedboard contains a Zynq-7020 SoC from Xilinx. The Zynq SoC contains a ARM $^\text{\textregistered}$ Processing system and 7 series programmable logic (FPGA).\\
+This thesis project will focus on the programmable logic of Zynq SoC. 
 
 \begin{table}
   \centering
@@ -13,14 +14,11 @@
   \midrule
   Flip-flops & 106,400\\
   \midrule
-  Extensible Block Ram  & 560 kB\\
+  Block Ram  & 4.9 Mb\\
   \midrule
   Programmable DSP slices & 220 \\
   \bottomrule
   \end{tabular}
-  \caption{Parts on zynq 7020}
+  \caption{Programmable logic - Zynq 7020 \cite{zynq20137000}}
   \label{tb:z7020-parts}
 \end{table}
-\ref{tb:z7020-parts}\todo{bedre navn og cite ds190 product specification og måske trm?}
-
-\todo{FPGA contraints ==> C = f(A, T, P, N), Lav en tabel}

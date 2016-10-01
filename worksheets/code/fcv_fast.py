@@ -98,14 +98,16 @@ if __name__ == '__main__' or True:
     Limg = cv2.normalize(Limg, None, 0.0, 1.0, cv2.NORM_MINMAX, dtype = cv2.CV_32F)
     Rimg = cv2.normalize(Rimg, None, 0.0, 1.0, cv2.NORM_MINMAX, dtype = cv2.CV_32F)
 
-    Ilg = rgb2gray(Il)
-    Irg = rgb2gray(Ir)
+    cv2.cvtColor(Limg, Ilg, cv2.CV_BGR2GRAY );
+    cv2.cvtColor(Rimg, Irg, cv2.CV_BGR2GRAY );
 
     # mirror images
     Il_1 = Il[:,::-1,:]
     Ir_1 = Ir[:,::-1,:]
     Rimg_1 = Rimg[:,::-1,:]
     Limg_1 = Limg[:,::-1,:]
+    Irg_1 = Ilg[:,::-1]
+
 
     # compute gradient in X-direction and make mirror versions
     fx_l = np.gradient(Ilg)[1]
@@ -162,8 +164,8 @@ if __name__ == '__main__' or True:
     print 'Starting Guided image filter. Time taken so far', time.time()-start, 'seconds'
 
     # Use opencv to perform Guided image filtering
-    Il_gf = cv2.ximgproc.createGuidedFilter(Limg,r,eps)
-    Ir_gf = cv2.ximgproc.createGuidedFilter(Rimg_1,r,eps)
+    Il_gf = cv2.ximgproc.createGuidedFilter(Ilg,r,eps)
+    Ir_gf = cv2.ximgproc.createGuidedFilter(Irg_1,r,eps)
     q = np.zeros((m,n),dtype=np.float32)
     q1 = np.zeros((m,n),dtype=np.float32)
 

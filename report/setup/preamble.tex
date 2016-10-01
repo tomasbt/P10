@@ -87,7 +87,7 @@
 % Change margins, papersize, etc of the document
 \usepackage[
   inner=28mm,% left margin on an odd page
-  outer=41mm,% right margin on an odd page
+  outer=28mm,% right margin on an odd page
   ]{geometry}
 % Modify how \chapter, \section, etc. look
 % The titlesec package is very configureable
@@ -142,9 +142,9 @@
 \usepackage{lastpage}
 % Add todo notes in the margin of the document
 \usepackage[
-%  disable, %turn off todonotes
+  disable, %turn off todonotes
   colorinlistoftodos, %enable a coloured square in the list of todos
-  textwidth=\marginparwidth, %set the width of the todonotes
+  %textwidth=\marginparwidth, %set the width of the todonotes
   textsize=scriptsize, %size of the text in the todonotes
   ]{todonotes}
 
@@ -216,3 +216,5 @@
   breakatwhitespace=true,
   tabsize=3
 }
+
+\setcounter{tocdepth}{1}
