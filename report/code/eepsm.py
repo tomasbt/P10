@@ -365,6 +365,7 @@ if __name__ == "main" or True:
                 dispmap_final_filled[y][x] = dispmap_final_filled[y][x+1]
 
     print 'It took', time.time()-start
+    
     # save the out as .png for the report
     plt.figure()
     fstr = 'data/res/'+image+'_eepsm_1.png'

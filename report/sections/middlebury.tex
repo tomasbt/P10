@@ -1,0 +1,71 @@
+\chapter{Middlebury data set}\label{app:middlebury}
+This appendix contains a brief description over the data sets from Middlebury. The computer vision department at Middlebury College have a large library of stereo pair with ground truth\cite{middlebury2016}. These data sets are used all around the world for evaluating stereo vision algorithms. This thesis uses a subset of these stereo pairs. \\
+These are: Tsukuba, Cones, Teddy and Motorcycle. The three first data sets are used due to great knowledge of them from HSA systems. The last set, Motorcycle, is used due to it having the ground truth as an .pfm file. With a .pfm file then comparing is easier since the ground truth for other sets have scaling hence direct comparison is not possible. The four data sets are presented below.\\
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=0.9\textwidth]{figures/tsul.jpg}
+    \caption{Left image \label{fig:aptsu_l}}
+  \end{subfigure}\hspace{0.5cm}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=0.9\textwidth]{figures/tsur}
+    \caption{Right image\label{fig:aptsu_r}}
+  \end{subfigure}\hspace{0.5cm}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=0.9\textwidth]{figures/tsu_gt}
+    \caption{Ground Truth\label{fig:aptsu_gt}}
+  \end{subfigure}
+  \caption{Tsukuba - $384\times288$ \cite{Scharstein2002}\label{fig:aptsu}}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=0.9\textwidth]{figures/conl.jpg}
+    \caption{Left image \label{fig:apcon_l}}
+  \end{subfigure}\hspace{0.5cm}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=0.9\textwidth]{figures/conr}
+    \caption{Right image\label{fig:apcon_r}}
+  \end{subfigure}\hspace{0.5cm}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=0.9\textwidth]{figures/con_gt}
+    \caption{Ground Truth\label{fig:apcon_gt}}
+  \end{subfigure}
+  \caption{Cones - $450\times375$ \cite{Scharstein2003}\label{fig:apcon}}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=0.9\textwidth]{figures/tedl.jpg}
+    \caption{Left image \label{fig:apted_l}}
+  \end{subfigure}\hspace{0.5cm}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=0.9\textwidth]{figures/tedr}
+    \caption{Right image\label{fig:apted_r}}
+  \end{subfigure}\hspace{0.5cm}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=0.9\textwidth]{figures/ted_gt}
+    \caption{Ground Truth\label{fig:apted_gt}}
+  \end{subfigure}
+  \caption{Teddy - $450\times375$ \cite{Scharstein2003}\label{fig:apted}}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=0.9\textwidth]{figures/motl.jpg}
+    \caption{Left image \label{fig:apmot_l}}
+  \end{subfigure}\hspace{0.5cm}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=0.9\textwidth]{figures/motr}
+    \caption{Right image\label{fig:apmot_r}}
+  \end{subfigure}\hspace{0.5cm}
+  \begin{subfigure}[t]{0.3\textwidth}
+    \centering\includegraphics[width=0.9\textwidth]{figures/mot_GT}
+    \caption{Ground Truth\label{fig:apmot_gt}}
+  \end{subfigure}
+  \caption{Motorcycle - $741\times497$ \cite{Scharstein2014}\label{fig:apmot}}
+\end{figure}
