@@ -218,3 +218,12 @@
 }
 
 \setcounter{tocdepth}{1}
+
+% set varioref settings 
+\AtBeginDocument{%
+  \renewcommand*\reftextbefore{(p.~\thevpagerefnum)}
+  \let\reftextfacebefore\reftextbefore
+  \let\reftextafter\reftextbefore
+  \let\reftextfaceafter\reftextbefore
+  \renewcommand*\reftextfaraway[1]{(p.~\pageref{#1})}
+}

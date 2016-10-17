@@ -114,7 +114,7 @@ Rectification will transform the stereo images to remove lens distortion and mak
   \caption{Rectified stereo pair\label{fig:rect} \cite{Mattoccia2013}}
 \end{figure}
 
-The issue with rectification is that it is difficult to get a perfect match with the stereo setup since every camera and its lens will be unique and require and all new manual calibration. HSA systems theorizes that a system can be developed which instead of rectifying the image will find the epipolar lines and feed this information to the stereo cameras.\\
+The issue with rectification is that it is difficult to get a perfect match with the stereo setup since every camera and its lens will be unique and require and all new manual calibration. HSA Systems theorizes that a system can be developed which instead of rectifying the image will find the epipolar lines and feed this information to the stereo cameras.\\
 
 In this project stereo image pairs from Middlebury Vision Test sets \cite{middlebury2016} will be used. These image pairs are rectified, and rectification of image will not be discussed further in this project.
 
@@ -148,20 +148,28 @@ For this project the impact of color spaces have not been studied but instead th
 Since the main focus of the project is on a fast stereo vision algorithm and minding the results from table \vref{tab:colourres}, it is decided to use grayscale images if the tradeoff is not to significant.
 
 \section{Disparity precision}\label{sec:disppre}
-The depth resolution depends on different things in the stereo camera setup. The camera resolution, the focal length, the baseline etc. HSA systems requires that the system has a \SI{\leq 2}{\milli\meter} depth resolution between \SI{0.5}{\meter} and \SI{1.5}{\meter}.\\
-The \textit{Imaging Source DMK 72BUC02} camera is provided by HSA systems for a stereo camera prototype and the specifications from this camera will be used for the calculations in this section. The camera has a resolution of 2592$\times$1944 and a pixel size of \SI{2.2}{\micro\meter}. It should also be noted that this camera is monochrome and only has a frame rate of 6 fps but is sufficient for an initial prototype. Similar cameras with higher frame rate and color is available from the Imaging Source. Full specifications of the camera can be found in \cite{imagingsource2016}. A baseline of \SI{125}{\milli\meter} is chosen since HSA systems has a simple stereo camera prototype with a baseline of \SI{125}{\milli\meter}.\\
+% New version
+The depth resolution depends on different things in the stereo camera setup: the camera resolution, the focal length, the baseline etc. HSA Systems requires that the system has a \SI{\leq 5}{\milli\meter} depth resolution between \SI{0.5}{\meter} and \SI{1.5}{\meter}.\\
+The sensor which will used for a final product will be a \textit{Sony IMX264} since this sensor is used in the company's smart camera products. This sensor has a resolution of 2464$\times$2056, a pixel size of \SI{3.45}{\micro\meter} and a frame rate of 35.7 fps. Full specifications of the sensor can be found in \cite{sonyimx264-2016}. HSA Systems requires that the baseline is \SI{\leq 10}{\centi\meter}.\\
 To calculate the precision equation \vref{eq:disp_final} is used. This equation is repeated here:
 \begin{flalign}
  && z &= \frac{b\cdot f}{d} && \label{eq:disp_final2}
 \end{flalign}
-The disparity, $d$, of equation \vref{eq:disp_final2} is expressed in pixels and may be converted to mm by using the the pixel size of the camera sensor. The lens of the camera can be changed and HSA systems has some different lenses with different focal lengths: 6, 9, 16, 25, and 50 mm. Figure \vref{fig:dispPreFocal} shows a plot of disparity precision at around 1500 mm distance from the cameras using the camera mentioned and a baseline of 125 mm. The red dots shows the result for the focal length available at HSA systems. The green line and red line shows when \SI{4}{\milli\meter} precision and \SI{2}{\milli\meter} precision is achieved. The reason for \SI{4}{\milli\meter} precision is shown is because this can be improved to \SI{2}{\milli\meter} precision using subpixel refinement.\\
-
+The disparity, $d$, of equation \vref{eq:disp_final2} is expressed in pixels and may be converted to mm by using the the pixel size of the camera sensor. A focal length $f$ should be chosen so the scene at max distance will be $1.5\times$\SI{1,5}{\meter} and figure \vref{fig:scenesize} shows the relationship between scene size and focal length.
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=1\textwidth]{figures/dispPreFocal}
-  \caption{Disparity precision at  $z \approx 1500$ mm compared to focal length with baseline = 125 mm and using \textit{Imaging Source DMK 72BUC02}}
-  \label{fig:dispPreFocal}
+  \includegraphics[scale=0.375]{figures/scenesize}
+  \caption{Illustration of the relationship between sensor size, scene size, focal length and distance}
+  \label{fig:scenesize}
 \end{figure}
+\begin{equation}
+ f = \frac{z\times s_{sensor}}{s_{scene}}
+\end{equation}
+Where $z$ is the distance, $s_{sensor}$ is the size of the sensor which depends on pixel size and resolution and $s_{scene}$ is the size of the scene. Since the camera resolution is not square a focal length for both horizontal and vertical scene size have to be calculated and the lowest focal length is chosen.
+\begin{flalign}
+  && f_h &= \frac{1500 \times 2464 \times 0.00345}{1500} = 8.5 mm && \\
+  && f_v &= \frac{1500 \times 2056 \times 0.00345}{1500} = 7.09 mm && 
+\end{flalign}
 
 To calculate the disparity precision the disparity value for a distance, $z$, of at least \SI{1500}{\milli\meter} should be found. Equation \vref{eq:disp_final2} can be rearranged and pixel size, $p_{size}$, can be added to calculate a disparity value for a specific distance:
 \begin{flalign}
@@ -177,24 +185,7 @@ Then precision at $\approx 1500$ mm can be found by using equation \vref{eq:disp
   && d_p &= \frac{b \cdot f}{p_{size}\cdot d_{1500mm}} - \frac{b \cdot f}{p_{size}\cdot (d_{1500mm}+1)} && \label{eq:dispPre}
 \end{flalign}
 Equation \vref{eq:dispPre} have been used for the plot in figure \vref{fig:dispPreFocal}. From the figure it is seen that \SI{4}{\milli\meter} precision is achieved at a focal length of $\approx 10$ mm and \SI{2}{\milli\meter} precision achieved at a focal length of $\approx 20$ mm. It is wanted to maximize the focal length but this will result in a narrower scene width and higher range of disparity values \\
-Figure \vref{fig:scewiwall} shows how the focal length influences the scene width. It is noticed that a higher focal length results in a smaller scene hence it is desired to minimize the focal length.\\
 
-\begin{figure}[ht!]
-  \centering
-  \begin{subfigure}[t]{0.45\textwidth}
-    \centering\includegraphics[scale=0.75]{figures/scewiw.jpg}
-    \caption{Illustration of how a short focal length affects the scene width\label{fig:scewiw}}
-  \end{subfigure}\hspace{0.5cm}
-  \begin{subfigure}[t]{0.45\textwidth}
-    \centering\includegraphics[scale=0.75]{figures/scewiw2}
-    \caption{Illustration of how a long focal length affects the scene width\label{fig:scewiw2}}
-  \end{subfigure}
-  \begin{subfigure}[t]{1\textwidth}
-    \centering\includegraphics[width=1\textwidth]{figures/focalSceWid}
-    \caption{Scene width at z = 1500 mm with different focal length while the other specfication are constant\label{fig:scewfocalplot}}
-  \end{subfigure}
-  \caption{Illustration of how focal length affects the scene width at z = 1500 mm \label{fig:scewiwall}}
-\end{figure}
 Figure \vref{fig:drange} shows the disparity value at maximum distance ($z\approx 1500$ mm), the disparity value at minimum distance ($z \approx 500$ mm) and the range between these two values. As seen the disparity range increases linearly with the focal length which results in a large search area hence a lower focal length is wanted.\\
 \begin{figure}[ht!]
   \centering
@@ -237,7 +228,7 @@ There exist different types of occlusions: partial occlusions, self-occlusions, 
   \caption{Illustration of different types of occlusions\label{fig:occltypes}}
 \end{figure}
 
-Occluded points can be found by running stereo matching again but switching which camera is used as the reference and then compare the disparity values found for each direction. When occluded areas are found these can be filled using different methods. For this project the findings from \cite{huq2013occlusion} is used which will be described in section \vrefrange{sec:nda}{sec:sls}. All these methods assume that the stereo matching is using the left image as reference i.e. the points in the left image are searched for in the right image. 
+Occluded points can be found by running stereo matching again but switching which camera is used as the reference and then compare the disparity values found for each direction. When occluded areas are found these can be filled using different methods. For this project the findings from \cite{huq2013occlusion} is used which will be described in section \vref{sec:nda} \vref{sec:sls}??. All these methods assume that the stereo matching is using the left image as reference i.e. the points in the left image are searched for in the right image. 
 
 \subsection{Neighbor's Disparity Assignment (NDA)}\label{sec:nda}
 This is one of the simpler methods to fill occlusions. It functions by selecting an occluded point, $p_L$, then finds then nearest non-occluded point, $q_L$, to the left when filling non-border occlusion. With border occlusion, the nearest point to the right is found instead. This method assumes that this non-occluded point is part of the same surface as the occluded point (this can be seen on figure \ref{fig:occlboth}) and the disparity value from $q_L$ can be assigned to $p_L$. This method has some issues. In cases of total occlusions (see figure \ref{fig:occltb}) wrong disparity values will be given to the total occluded object since it is not a part of the nearest surface with non-occluded points to the left. In cases with self-occlusions the occluded area should have disparity values close to the disparity values of the non-occluded points to the right (This will be the area of the surface which is in view of both cameras) but using NDA will give the occluded area disparity values corresponding to the background.

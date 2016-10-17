@@ -8,7 +8,7 @@ C = f(A,T,P,N,test) = a_1\cdot A + a_2 \cdot T + a_3 \cdot P + a_4 \cdot N + a_4
 where $A$ is area, $T$ is time, $P$ is power, $N$ is noise, $test$ is the result from middlebury test and $a_i$ tells the importance of the associated metric.\\
 It is the task of the system designer to minimize this cost. And due to $a_i$ the cost function can be changed to fit the priorities of the application.\\
 
-For this thesis the number one priority is the time metric since it is wished for the algorithm to be real-time. The test metric is also important since it describes the quality of the stereo matching. Area isn't as important because if the target FPGA is to small then HSA systems will use a larger FPGA but larger area often equals more expensive hardware. Power isn't important either since the stereo setup is intended being a part of industrial systems hence power is easily accessible.\\
+For this thesis the number one priority is the time metric since it is wished for the algorithm to be real-time. The test metric is also important since it describes the quality of the stereo matching. Area isn't as important because if the target FPGA is to small then HSA Systems will use a larger FPGA but larger area often equals more expensive hardware. Power isn't important either since the stereo setup is intended being a part of industrial systems hence power is easily accessible.\\
 An ordered list of priorities for the design metrics in this project:
 \begin{enumerate}
   \item Time
@@ -44,7 +44,7 @@ This section will describe how to the requirements can be tested to ensure that 
 
 Requirement 1: frame rate can be tested by running the finalized implementation and measure the run time which then should be \SI{\leq 100}{\milli\second}. \\
 
-Requirement 2: disparity precision. For this HSA systems has produced a test object which has small depth increases. Figure \vref{fig:3dpretest} shows a 3D model of this test object. This model was 3D printed in case a working prototype of the prototype was available for testing. The steps closest to the bottom right of the figure increase by 1 mm for each step. The next line increase by 2 mm for each step. This continues and the last line of steps increases by 5 mm for each step. The small shapes in the middle of each step have a depth difference of 0.5 mm and alternately protrudes from or recesses into the steps. This object can be used to test where the precision of a stereo setup and algorithm is between 0.5 and 5 mm depending on which lines of step can be seen. \\
+Requirement 2: disparity precision. For this HSA Systems has produced a test object which has small depth increases. Figure \vref{fig:3dpretest} shows a 3D model of this test object. This model was 3D printed in case a working prototype of the prototype was available for testing. The steps closest to the bottom right of the figure increase by 1 mm for each step. The next line increase by 2 mm for each step. This continues and the last line of steps increases by 5 mm for each step. The small shapes in the middle of each step have a depth difference of 0.5 mm and alternately protrudes from or recesses into the steps. This object can be used to test where the precision of a stereo setup and algorithm is between 0.5 and 5 mm depending on which lines of step can be seen. \\
 
 \begin{figure}[ht!]
   \centering
