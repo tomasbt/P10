@@ -222,22 +222,27 @@ def save_pfm(file, image, scale=1):
 if __name__ == "main" or True:
 
     start = time.time()
-    print 'script started at', time.strftime("%H:%M:%S.", time.localtime()), \
-        'Expected done at', time.strftime("%H:%M.", time.localtime(
-            time.time() + 120))
+    print 'script started at', time.strftime("%H:%M:%S.", time.localtime())
 
     # filenames
     fdict = {'con': ['data/usable/conl.ppm', 'data/usable/conr.ppm', 59],
              'conf': ['data/usable/conlf.ppm', 'data/usable/conrf.ppm', 236],
              'ted': ['data/usable/tedl.ppm', 'data/usable/tedr.ppm', 59],
+             'ted2': ['data/usable/ted2l.ppm', 'data/usable/ted2r.ppm', 59],
              'tedf': ['data/usable/tedlf.ppm', 'data/usable/tedrf.ppm', 236],
              'mot': ['data/usable/motl.ppm', 'data/usable/motr.ppm', 70],
              'tsu': ['data/usable/tsul.ppm', 'data/usable/tsur.ppm', 30],
              'nku': ['data/usable/nkul.ppm', 'data/usable/nkur.ppm', 130],
-             'ven': ['data/usable/venl.ppm', 'data/usable/venr.ppm', 32]}
+             'ven': ['data/usable/venl.ppm', 'data/usable/venr.ppm', 32],
+             'art': ['data/usable/artl.ppm', 'data/usable/artr.ppm', 70],
+             'pla': ['data/usable/plal.ppm', 'data/usable/plar.ppm', 154],
+             'pip': ['data/usable/pipl.ppm', 'data/usable/pipr.ppm', 70],
+             'vin': ['data/usable/vinl.ppm', 'data/usable/vinr.ppm', 135],
+             'she': ['data/usable/shel.ppm', 'data/usable/sher.ppm', 50],
+             'roo': ['data/usable/rool.ppm', 'data/usable/roor.ppm', 75]}
 
     # set constants
-    image = 'mot'  # decide which stereo pair will be used.
+    image = 'art'  # decide which stereo pair will be used.
 
     lim = 2
     al = 0.5
@@ -258,6 +263,15 @@ if __name__ == "main" or True:
     Rimg = readcolorppm(fnamer)  # /255.0  # Right image
     LimgG = rgb2gray(Limg)            # Left image grayscale
     RimgG = rgb2gray(Rimg)            # Right image grayscale
+
+    timefactor = 29360
+    print 'Resolution:', Limg.shape[1], 'x', Limg.shape[0], '=', LimgG.size, \
+        'pixels'
+    print 'Max Disparity:', maxDisp
+    print 'Total time guessed:', LimgG.size * maxDisp / timefactor, 'sec'
+    print 'Expected done at', time.strftime("%H:%M.", time.localtime(
+        time.time() + LimgG.size * maxDisp / timefactor))
+
     # mirrored along the x-axis versions
     Limg_m = Limg[:, ::-1]   # Left image mirrored
     Rimg_m = Rimg[:, ::-1]   # Right image mirroed
@@ -500,18 +514,12 @@ if __name__ == "main" or True:
                     dispmap_final_filled[y, x] = dispmap_final_filled[y, x + 1]
 
     print 'It took', time.time() - start
-    # save the out as .png for the report
-    # plt.figure()
-    # fstr = 'data/res/'+image+'_eepsm_1.png'
-    # plt.imsave(fstr,dispmap,cmap=plt.cm.gray)
-    # print "image saved as:" + fstr
-    # plt.close()
-    #
-    # save the out as .png for the report
+
+    # # save the out as .png for the report
     plt.figure()
     fstr = 'data/res/' + image + '_cr' + str(cr) + '_s' + str(sig) + '_al' + \
         str(al) + '_eepsm_2.png'
-    plt.imsave(fstr, dispmap, cmap=plt.cm.gray)
+    plt.imsave(fstr, dispmap_final_filled, cmap=plt.cm.gray)
     print "image saved as:" + fstr
 
     plt.close()
@@ -527,8 +535,12 @@ if __name__ == "main" or True:
         plt.imshow(dispmap_final_filled, cmap=plt.cm.gray)
 
     # save the ouput as .pfm if pfm files exist for the images
-    if image == 'mot':
+    imgList = ['mot', 'ted2', 'roo', 'she', 'vin', 'pip', 'pla', 'art']
+    if any(image in s for s in imgList):
         fstr = 'data/res/' + image + '_eepsm.pfm'
         file = open(fstr, 'wb')
         save_pfm(file, dispmap_final_filled.astype('float32'), scale=1)
+        print "image saved as:" + fstr
         file.close()
+
+    plt.show()

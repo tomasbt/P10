@@ -44,11 +44,18 @@ def load_pfm(file):
 
 if __name__ == 'main' or True:
 
-    f = open('data/mot_GT.pfm')
+    image = 'roo'
+    alg = 'eepsm'
+
+    fstr = 'data/' + image + '_GT.pfm'
+    f = open(fstr)
     img, s = load_pfm(f)
     f.close()
 
-    f = open('data/res/mot_eepsm.pfm')
+    fstr2 = 'data/res/' + image + '_' + alg + '.pfm'
+
+    print fstr2
+    f = open(fstr2)
     img2, s2 = load_pfm(f)
     f.close()
 

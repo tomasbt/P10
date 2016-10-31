@@ -184,7 +184,7 @@
 
 \usepackage{varioref}
 
-\usepackage{siunitx}
+\usepackage[binary-units = true]{siunitx}
 
 % for code snippets
 \usepackage{listings}
@@ -227,3 +227,8 @@
   \let\reftextfaceafter\reftextbefore
   \renewcommand*\reftextfaraway[1]{(p.~\pageref{#1})}
 }
+
+\usepackage{multicol}
+
+\newcommand\tabitem{\makebox[1em][r]{\textbullet~}}
+\usepackage{paralist}

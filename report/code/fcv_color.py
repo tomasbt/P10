@@ -189,18 +189,27 @@ def save_pfm(file, image, scale=1):
 if __name__ == '__main__' or True:
     start = time.time()
 
+    print 'script started at', time.strftime("%H:%M:%S.", time.localtime())
+
     # filenames
     fdict = {'con': ['data/usable/conl.ppm', 'data/usable/conr.ppm', 59],
              'conf': ['data/usable/conlf.ppm', 'data/usable/conrf.ppm', 236],
              'ted': ['data/usable/tedl.ppm', 'data/usable/tedr.ppm', 59],
+             'ted2': ['data/usable/ted2l.ppm', 'data/usable/ted2r.ppm', 59],
              'tedf': ['data/usable/tedlf.ppm', 'data/usable/tedrf.ppm', 236],
              'mot': ['data/usable/motl.ppm', 'data/usable/motr.ppm', 70],
              'tsu': ['data/usable/tsul.ppm', 'data/usable/tsur.ppm', 30],
              'nku': ['data/usable/nkul.ppm', 'data/usable/nkur.ppm', 130],
-             'ven': ['data/usable/venl.ppm', 'data/usable/venr.ppm', 32]}
+             'ven': ['data/usable/venl.ppm', 'data/usable/venr.ppm', 32],
+             'art': ['data/usable/artl.ppm', 'data/usable/artr.ppm', 70],
+             'pla': ['data/usable/plal.ppm', 'data/usable/plar.ppm', 154],
+             'pip': ['data/usable/pipl.ppm', 'data/usable/pipr.ppm', 70],
+             'vin': ['data/usable/vinl.ppm', 'data/usable/vinr.ppm', 135],
+             'she': ['data/usable/shel.ppm', 'data/usable/sher.ppm', 50],
+             'roo': ['data/usable/rool.ppm', 'data/usable/roor.ppm', 75]}
 
     # set constants
-    image = 'mot'
+    image = 'vin'
     al = 0.11
     maxDisp = fdict[image][2]
     r = 9
@@ -213,6 +222,8 @@ if __name__ == '__main__' or True:
     g_d = 9
     r_median = 19
 
+    timefactor = 16800
+
     fnamel = fdict[image][0]
     fnamer = fdict[image][1]
 
@@ -221,6 +232,13 @@ if __name__ == '__main__' or True:
     Rimg = readcolorppm(fnamer) / 255.0
     LimgG = np.floor(rgb2gray(Limg))
     RimgG = np.floor(rgb2gray(Rimg))
+
+    print 'Resolution:', Limg.shape[1], 'x', Limg.shape[0], '=', LimgG.size, \
+        'pixels'
+    print 'Max Disparity:', maxDisp
+    print 'Total time guessed:', LimgG.size * maxDisp / timefactor, 'sec'
+    print 'Expected done at', time.strftime("%H:%M.", time.localtime(
+        time.time() + LimgG.size * maxDisp / timefactor))
 
     # mirror images
     Rimg_1 = Rimg[:, ::-1, :]
@@ -315,8 +333,17 @@ if __name__ == '__main__' or True:
     print "image saved as:" + fstr
 
     # save the ouput as .pfm if pfm files exist for the images
-    if image == 'mot':
+    imgList = ['mot', 'ted2', 'roo', 'she', 'vin', 'pip', 'pla', 'art']
+    if any(image in s for s in imgList):
         fstr = 'data/res/' + image + '_fcv.pfm'
         file = open(fstr, 'wb')
         save_pfm(file, dispmap_final_filled.astype('float32'), scale=1)
         file.close()
+    plt.close()
+    plt.figure()
+    plt.imshow(dispmap_l, cmap=plt.cm.gray)
+    plt.figure()
+    plt.imshow(dispmap_r, cmap=plt.cm.gray)
+    plt.figure()
+    plt.imshow(dispmap_final_filled, cmap=plt.cm.gray)
+    plt.show()

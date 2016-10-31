@@ -295,7 +295,7 @@ Figures \vref{fig:tsu_all} to \vref{fig:mot_all} shows resulting disparity maps.
     \caption{FCV\label{fig:tsu_fcv}}
   \end{subfigure}\hspace{0.5cm}
   \begin{subfigure}[t]{0.3\textwidth}
-    \centering\includegraphics[width=5cm]{figures/tsu_eepsm}
+    \centering\includegraphics[width=5cm]{figures/tsu_eepsm1}
     \caption{EEPSM\label{fig:tsu_eepsm}}
   \end{subfigure}
   \caption{Tsukuba \cite{Scharstein2002}\label{fig:tsuall}}
@@ -312,7 +312,7 @@ Figures \vref{fig:tsu_all} to \vref{fig:mot_all} shows resulting disparity maps.
     \caption{FCV\label{fig:con_fcv}}
   \end{subfigure}\hspace{0.5cm}
   \begin{subfigure}[t]{0.3\textwidth}
-    \centering\includegraphics[width=5cm]{figures/con_fcv}
+    \centering\includegraphics[width=5cm]{figures/con_eepsm1}
     \caption{EEPSM\label{fig:con_eepsm}}
   \end{subfigure}
   \caption{conkuba \label{fig:conall}}
@@ -329,7 +329,7 @@ Figures \vref{fig:tsu_all} to \vref{fig:mot_all} shows resulting disparity maps.
     \caption{FCV\label{fig:ted_fcv}}
   \end{subfigure}\hspace{0.5cm}
   \begin{subfigure}[t]{0.3\textwidth}
-    \centering\includegraphics[width=5cm]{figures/ted_fcv}
+    \centering\includegraphics[width=5cm]{figures/ted_eepsm1}
     \caption{EEPSM\label{fig:ted_eepsm}}
   \end{subfigure}
   \caption{Teddy \label{fig:tedall}}
@@ -338,7 +338,7 @@ Figures \vref{fig:tsu_all} to \vref{fig:mot_all} shows resulting disparity maps.
 \begin{figure}[ht]
   \centering
   \begin{subfigure}[t]{0.3\textwidth}
-    \centering\includegraphics[width=5cm]{figures/mot_GT}
+    \centering\includegraphics[width=5cm]{figures/mot_gt.png}
     \caption{Ground truth \cite{Scharstein2014} (Is dark due to scaling) \label{fig:mot_gt}}
   \end{subfigure}\hspace{0.5cm}
   \begin{subfigure}[t]{0.3\textwidth}
@@ -346,11 +346,50 @@ Figures \vref{fig:tsu_all} to \vref{fig:mot_all} shows resulting disparity maps.
     \caption{FCV\label{fig:mot_fcv}}
   \end{subfigure}\hspace{0.5cm}
   \begin{subfigure}[t]{0.3\textwidth}
-    \centering\includegraphics[width=5cm]{figures/mot_fcv}
+    \centering\includegraphics[width=5cm]{figures/mot_eepsm1}
     \caption{EEPSM\label{fig:mot_eepsm}}
   \end{subfigure}
   \caption{Motorcycle\label{fig:motall}}
 \end{figure}
+
+\section{Theoretical Complexity}
+The simulations of the algorithms have to many unknown factors which can affect the performance e.g. the programmers knowledge of the algorithms and programming skills. To ensure a more precise?? estimation of the performance of the algorithms the theoretical complexity have been calculated. Table \vref{tb:theocompl} shows the number of addition, multiplications, divisions and comparisons used per pixel. It should be noted that the exponential function in the EEPSM algorithm have be approximated with a power series:
+\begin{equation}
+  e^x = \sum_{n=0}^{\infty} \dfrac{x^n}{n!} = 1 + x + \dfrac{x^2}{2!} + \dfrac{x^3}{3!} + \dots \label{eq:exppowser}
+\end{equation}
+Then it should be determined how many terms should be used for achieving sufficient precision. The exponential function is used in the calculation of permeability weights and the values all is in the interval $[-\dfrac{0}{25}; -\dfrac{255}{25}]$ 
+\begin{table}[ht!]
+  \centering
+  \begin{tabular}{c c c c c c}
+    \toprule
+    & type & add/subtract & multiplication & division & comparisons \\
+    \midrule
+    EEPSM & C & $10320 \cdot N$ & $9340 \cdot N$ & $0$ & $6624 \cdot N$ \\
+    & G & $8940 \cdot N$ & $4305 \cdot N$ & $0$ & $6624 \cdot N$ \\
+    FCV & C & $268675 \cdot N$ & $57750 \cdot N$ & $275 \cdot N$ & $0$ \\
+    & G & $95150 \cdot N$ & $14575 \cdot N$ & $275 \cdot N$ & $0$ \\
+    \bottomrule
+  \end{tabular}
+  \caption{Complexity of each algorithm, where N is the number of pixels}
+  \label{tb:theocompl}
+\end{table}
+
+I/O communication can also have a significant influence on the performance hence the memory usage for each algorithm have also been calculated and the result is shown in table \vref{tb:memuse}.
+\begin{table}[ht!]
+  \centering
+  \begin{tabular}{c c c c c }
+    \toprule
+    & type & reads & writes & Memory $[$\si{\byte}$]$ \\
+    \midrule
+    EEPSM & C & $7751 \cdot N$ & $1375 \cdot N$ & $1381 \cdot N$ \\
+    & G & $7189 \cdot N$ & $1375 \cdot N$ & $1377 \cdot N$ \\
+    FCV & C & $22280 \cdot N$ & $275 \cdot N$ & $281 \cdot N$ \\
+    & G & $11278 \cdot N$ & $275 \cdot N$ & $277 \cdot N$ \\
+    \bottomrule
+  \end{tabular}
+  \caption{Memory resources used by each of the algorithms, where N is the number of pixels}
+  \label{tb:memuse}
+\end{table}
 
 \section{Choosing an algorithm}
 One of the algorithms described in this chapter should be chosen for further implementation on a FPGA. This choice is based on the results from section \vref{sec:simucomp}. Looking at table \ref{tab:runtime} it is seen that the Python implementation of the FCV algorithm has a far lower runtime than the EEPSM algorithm. The results might be misleading since the code for the FCV algorithm was inspired by an matlab example while the code for the EEPSM algorithm was written from the description.\\

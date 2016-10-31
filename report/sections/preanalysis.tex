@@ -150,52 +150,44 @@ Since the main focus of the project is on a fast stereo vision algorithm and min
 \section{Disparity precision}\label{sec:disppre}
 % New version
 The depth resolution depends on different things in the stereo camera setup: the camera resolution, the focal length, the baseline etc. HSA Systems requires that the system has a \SI{\leq 5}{\milli\meter} depth resolution between \SI{0.5}{\meter} and \SI{1.5}{\meter}.\\
-The sensor which will used for a final product will be a \textit{Sony IMX264} since this sensor is used in the company's smart camera products. This sensor has a resolution of 2464$\times$2056, a pixel size of \SI{3.45}{\micro\meter} and a frame rate of 35.7 fps. Full specifications of the sensor can be found in \cite{sonyimx264-2016}. HSA Systems requires that the baseline is \SI{\leq 10}{\centi\meter}.\\
+The sensor which will used for a final product will be a \textit{Sony IMX264} since this sensor is used in the company's smart camera products. This sensor has a resolution of 2464$\times$2056\label{req:camres}, a pixel size of \SI{3.45}{\micro\meter} \label{req:pixelsize} and a frame rate of 35.7 fps. Full specifications of the sensor can be found in \cite{sonyimx264-2016}. HSA Systems requires that the baseline is \SI{\leq 10}{\centi\meter}.\\
 To calculate the precision equation \vref{eq:disp_final} is used. This equation is repeated here:
 \begin{flalign}
  && z &= \frac{b\cdot f}{d} && \label{eq:disp_final2}
 \end{flalign}
-The disparity, $d$, of equation \vref{eq:disp_final2} is expressed in pixels and may be converted to mm by using the the pixel size of the camera sensor. A focal length $f$ should be chosen so the scene at max distance will be $1.5\times$\SI{1,5}{\meter} and figure \vref{fig:scenesize} shows the relationship between scene size and focal length.
+The disparity, $d$, of equation \vref{eq:disp_final2} is expressed in pixels and may be converted to mm by using the the pixel size ($p_{size}$) of the camera sensor. A focal length $f$ should be chosen so the scene at max distance will be $1.5\times$\SI{1,5}{\meter} \label{req:scenesize} and figure \vref{fig:scenesize} shows the relationship between scene size and focal length.\\
+
 \begin{figure}[ht!]
   \centering
   \includegraphics[scale=0.375]{figures/scenesize}
   \caption{Illustration of the relationship between sensor size, scene size, focal length and distance}
   \label{fig:scenesize}
 \end{figure}
+Since the two triangles in the figure are similar then the focal length can be determined using:
 \begin{equation}
- f = \frac{z\times s_{sensor}}{s_{scene}}
+ f = \frac{z \cdot s_{sensor}}{s_{scene}}
 \end{equation}
+
 Where $z$ is the distance, $s_{sensor}$ is the size of the sensor which depends on pixel size and resolution and $s_{scene}$ is the size of the scene. Since the camera resolution is not square a focal length for both horizontal and vertical scene size have to be calculated and the lowest focal length is chosen.
 \begin{flalign}
-  && f_h &= \frac{1500 \times 2464 \times 0.00345}{1500} = 8.5 mm && \\
-  && f_v &= \frac{1500 \times 2056 \times 0.00345}{1500} = 7.09 mm && 
+  && f_h &= \frac{1500 \cdot 2464 \cdot 0.00345}{1500} = 8.5 mm && \\
+  && f_v &= \frac{1500 \cdot 2056 \cdot 0.00345}{1500} = 7.09 mm && 
 \end{flalign}
+A focal length of \SI{7.09}{\milli\meter} is chosen\label{req:focallen} and this results in a scene size of $1798\times$\SI{1500}{\milli\meter}. With the baseline and focal length determined, it can be calculated when the disparity precision is \SI{\leq 5}{\milli\meter}.\\
+The derivative of $z$ with respect to $d$ gives the precision at a specific disparity. 
+\begin{equation}
+  z' =  -\dfrac{b \cdot f}{p_{size} \times (d^2)} 
+\end{equation}
+Inserting the known values and the wanted precision the disparity $d$ is found to be $202,73$ but since the disparity is an integer this value should be rounded up to $203$. This results in a disparity precision of \SI{-4.99}{\milli\meter} and the distance where this precision is achieved is at \SI{1012.35}{\milli\meter}. This doesn't not comply to the requirement from HSA Systems. Using sub-pixel refinement a precision of \SI{10}{\milli\meter} can be used to achieve the same precision. This precision is achieved at a disparity of $144$ and the precision is then \SI{-9.91}{\milli\meter} at the distance \SI{1427}{\milli\meter}. This still don't comply with the requirement. \\
+To improve the precision further either the resolution, the baseline or the focal can be changed but each require an other requirement to fail. The resolution requires a new camera sensor. The baseline need to be at least \SI{11}{\milli\meter} larger. The focal length need to at least \SI{0.73}{\milli\meter} higher but this results in a scene size of $1631 \times$\SI{1361}{\milli\meter}. \\
 
-To calculate the disparity precision the disparity value for a distance, $z$, of at least \SI{1500}{\milli\meter} should be found. Equation \vref{eq:disp_final2} can be rearranged and pixel size, $p_{size}$, can be added to calculate a disparity value for a specific distance:
-\begin{flalign}
-  && d &= \frac{b \cdot f}{p_{size}\cdot z} && \label{eq:dispatz}
-\end{flalign}
-The disparity value found by equation \vref{eq:dispatz} might not be a integer which the disparity always will be hence the value should be rounded down to ensure an valid value which results in a distance of at least 1500 mm. Adding the known values the following equation is acquired:
-\begin{flalign}
-  && d_{1500mm} &= \left\lfloor \frac{125 \cdot f}{0.0022 \cdot 1500} \right\rfloor && 
-\end{flalign}
-Then precision at $\approx 1500$ mm can be found by using equation \vref{eq:disp_final2} with disparity, $d_{1500mm}$, and subtract the distance for disparity, $d_{1500mm} + 1$: 
-\begin{flalign}
-  && d_p &= z_{d_{1500mm}} - z_{d_{1500mm}+1} && \\
-  && d_p &= \frac{b \cdot f}{p_{size}\cdot d_{1500mm}} - \frac{b \cdot f}{p_{size}\cdot (d_{1500mm}+1)} && \label{eq:dispPre}
-\end{flalign}
-Equation \vref{eq:dispPre} have been used for the plot in figure \vref{fig:dispPreFocal}. From the figure it is seen that \SI{4}{\milli\meter} precision is achieved at a focal length of $\approx 10$ mm and \SI{2}{\milli\meter} precision achieved at a focal length of $\approx 20$ mm. It is wanted to maximize the focal length but this will result in a narrower scene width and higher range of disparity values \\
-
-Figure \vref{fig:drange} shows the disparity value at maximum distance ($z\approx 1500$ mm), the disparity value at minimum distance ($z \approx 500$ mm) and the range between these two values. As seen the disparity range increases linearly with the focal length which results in a large search area hence a lower focal length is wanted.\\
+It is chosen to reduce the scene size to $1631 \times$\SI{1361}{\milli\meter} and use a focal length of \SI{7.82}{\milli\meter}. This result in a precision of  \SI{10}{\milli\meter} at  \SI{\approx 1500}{\milli\meter} so sub-pixel refinement have to be used. And the disparity range will be 275. Figure \vref{fig:dpre} shows the disparity precision at different distances with the chosen baseline, focal length and sensor.
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=1\textwidth]{figures/drange}
-  \caption{Graph of disparity values at minimum distance and maximum distance and the disparity range}
-  \label{fig:drange}
+  \includegraphics[width=0.9\textwidth]{figures/dpre}
+  \caption{Disparity precision in the distance range \si{0.5}\SI{-1.5}{\meter}}
+  \label{fig:dpre}
 \end{figure}
-Using a camera with the same pixel size and resolution as \textit{Imaging Source DMK 72BUC02} there are two lens choices: 1) a lens with a focal length of 10 mm if subpixel refinement is used or 2) a lens with a focal length of 20 mm is wanted if subpixel refinement is not used. \\
-A 10 mm focal length will result in a scene width of 855 mm, a disparity range of 759 and a precision of 3.97 mm. A 20 mm focal length will result in a scene width of 428 mm, a disparity range of 1516 and a precision of 1.98 mm.\\
-Since a disparity range of 1516 is excessively high and a scene width of 428 mm is very small it have been chosen to use a 10 mm lens along with subpixel refinement.\\
 
 \section{Occlusions}
 Occlusions occur when an object closer to the camera setup entirely or partially blocks an object behind it. Figure \vref{fig:occlboth} illustrates two cylinders seen by a stereo camera setup where occlusion occurs. Figure \vref{fig:occltop} shows that the blue cylinder is only partially visible to the right camera because the red cylinder blocks the view while the left camera can see the whole of both cylinders. When searching for corresponding points in the occluded area issues occur. As illustrated by the arrow on figure \vref{fig:occl2view}, the edge of the blue cylinder can not be found and it will result in calculating a wrong disparity value. \\
@@ -337,7 +329,7 @@ To conclude this chapter the findings for each area in stereo vision will be exa
 This project will not delve further into the subject of rectification and data sets from \cite{middlebury2016}, which are already rectified, will be used in this project.
 
 \subsection*{Color Space}
-The result from \cite{chambon2005colour} shows that color spaces in most cases is slightly better than using grayscale images but the run time is much higher. This result depends on the algorithm used therefore when an algorithm has been chosen a test should check if grayscale images perform much worse than using color images and what the impact on run time is.
+The result from \cite{chambon2005colour} shows that color spaces in most cases is slightly better than using grayscale images but the computational complexity is much higher. This result depends on the algorithm used therefore when an algorithm has been chosen a test should check if grayscale images perform much worse than using color images and what the impact on run time is.
 
 \subsection*{Resolution and Disparity Precision}
 To have a disparity precision of 2 mm at 1500 mm using \textit{Imaging Source DMK 72BUC02} cameras with a resolution of 2592$\times$1944 and a pixel size of 2.2 \si{\micro\meter} a lens with a focal length of 10 mm should be used together with subpixel refinement.
