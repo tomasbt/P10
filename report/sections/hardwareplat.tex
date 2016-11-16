@@ -1,5 +1,12 @@
 \chapter{Platform analysis} \label{ch:plaanalysis}
-This chapter the hardware platform provided for this is described. For this project HSA systems have provided a Zedboard Development Board \cite{Zedboard2014}. This board is used for this project since it contains a Zynq Z-7020 SoC from Xilinx, which HSA Systems uses for multiple products. The Zynq SoC contains a ARM$^\text{\textregistered}$ Processing system and 7 series programmable logic (FPGA). This thesis project will focus on the programmable logic of Zynq SoC. 
+This chapter the hardware platform provided for this is described. For this project, HSA systems have provided a Zedboard Development Board \cite{Zedboard2014}. This board is used for this project since it contains a Zynq Z-7020 SoC from Xilinx, which HSA Systems uses for multiple products. 
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=0.75\textwidth]{figures/z7020overview}
+  \caption{Architectural Overview \cite{zynq20137000}}
+  \label{fig:z7020over}
+\end{figure}
+The Zynq SoC contains an ARM$^\text{\textregistered}$ Processing system and 7 series programmable logic (FPGA). This thesis project will focus on the programmable logic of Zynq SoC. Figure \vref{fig:z7020over} shows an overview over the Zynq Z-7000 architecture. From this figure it can be noticed that the \textit{programmable logic} is located at the bottom and all the connection to the rest of the system is seen. In the upper right of the overview, the ARM$^\text{\textregistered}$ cores are located. In this project the GPP part of the SoC will be used of OS and likewise assignments. The algorithm will mostly be implemented in the programmable logic.
 
 \begin{table}[ht!]
   \centering
@@ -22,4 +29,43 @@ This chapter the hardware platform provided for this is described. For this proj
   \label{tb:z7020-parts}
 \end{table}
 
-\section{Hardware usage}
+Text about platform trade-off\\
+When designing embedded systems the choice of platform is important. Different platform exists each with their own advantages and disadvantages. Figure \vref{fig:plattrade} illustrates the relation between design time and flexibility for general platform types. \\
+\begin{figure}[ht!]
+  \centering
+  %\includegraphics[width=0.7\textwidth]{figures/plattrade2}
+  \includegraphics[width=0.5\textwidth]{figures/plattrade}
+  \caption{Relation between design time and flexibility for general platform types.}
+  \label{fig:plattrade}
+\end{figure}
+From this figure it is seen that there is a clear trade-off between a general-purpose processor (GPP) and an application specific integrated circuit (ASIC). The other platforms fall in between these two, in terms of the metrics. \\
+
+A GPP is a popular choice due to its short design time and high flexibility. It is optimized for data manipulation, control flow and sequential performance. However in the area of signal processing applications  
+
+\section{Hardware utilization}
+In this section, the hardware utilization of the Xilinx Vivado software and the Zedboard is explored. The software used is the Vivado HL Design Edition 2016.2. To get a simple approximation of the hardware utilization some simple systems have been generated in the software and synthesized and implemented. Simple systems with a specified functional unit have been created using the Block Design system in Vivado. 100 copies of the specified functional unit were added. 
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=0.75\textwidth]{figures/Blockdesignexample.png}
+  \caption{Example of block design in vivado}
+  \label{fig:blodesexa}
+\end{figure}
+The reasoning for 100 copies is to ensure that the contribution from control signals and wiring is minimized. With a block design generated it can be synthesized. In Vivado there are 2 steps. The first step is \textit{synthesize} where the software figures out which hardware is needed for the system and then the next step is \textit{implementation} where the software optimize the hardware use for the platform it is implemented on. To complete the \textit{implementation} step then the design have to fit the target hardware so the design must not exceed the number of available I/O ports etc. When generating the block design IP blocks from Xilinx was used and for most FUs inputs and outputs of 16 bits where used. Each output needs to be connected to its own port and this will result in the implementation step to fail since too many I/O ports is used. Connecting the outputs to temporary signals and not using these signals will result in the \textit{implementation} step to optimize and remove all the adders since the output aren't used. Instead,  a Slice IP can be used to strip every bit but MSB. This results in every block only having an output size of \SI{1}{\bit} and the I/O usage have been lowered enough for the \textit{implementation} to succeed. Then the hardware utilization can be found in the software. These values are then divided by 100 to get a rough idea of how much hardware each functional unit requires.\\
+Appendix~\vref{app:alloctest} describes more thoroughly the procedure for these tests and table~\ref{tab:utilizationofelements} shows the result.
+\begin{table}[ht!]
+\centering
+\begin{tabular}{l | c c c c }
+  \toprule
+   &  LUT & FF & BRAM & DSP48 \\
+  \midrule
+  Adder & 15 & 15 & - & - \\
+  Adder/Subtracter  & $\approx 16$ & 15 & - & - \\
+  Subtract  & 15 &  15 & - & - \\
+  Multiplier - LUT  & 352 &  36 & - & - \\
+  Multiplier - DSP48 & - & - & - & 1 \\
+  Divider & $\approx 177$ & 82 & 0.5 & 7 \\
+  \bottomrule
+\end{tabular}
+\caption{Number of logic elements used in average for each FU}
+\label{tab:utilizationofelements}
+\end{table}

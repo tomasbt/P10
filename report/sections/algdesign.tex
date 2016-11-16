@@ -315,7 +315,7 @@ Figures \vref{fig:tsu_all} to \vref{fig:mot_all} shows resulting disparity maps.
     \centering\includegraphics[width=5cm]{figures/con_eepsm1}
     \caption{EEPSM\label{fig:con_eepsm}}
   \end{subfigure}
-  \caption{conkuba \label{fig:conall}}
+  \caption{Cones \cite{Scharstein2003} \label{fig:conall}}
 \end{figure}
 
 \begin{figure}[ht]
@@ -332,7 +332,7 @@ Figures \vref{fig:tsu_all} to \vref{fig:mot_all} shows resulting disparity maps.
     \centering\includegraphics[width=5cm]{figures/ted_eepsm1}
     \caption{EEPSM\label{fig:ted_eepsm}}
   \end{subfigure}
-  \caption{Teddy \label{fig:tedall}}
+  \caption{Teddy \cite{Scharstein2003} \label{fig:tedall}}
 \end{figure}
 
 \begin{figure}[ht]
@@ -349,8 +349,12 @@ Figures \vref{fig:tsu_all} to \vref{fig:mot_all} shows resulting disparity maps.
     \centering\includegraphics[width=5cm]{figures/mot_eepsm1}
     \caption{EEPSM\label{fig:mot_eepsm}}
   \end{subfigure}
-  \caption{Motorcycle\label{fig:motall}}
+  \caption{Motorcycle \cite{Scharstein2014}\label{fig:motall}}
 \end{figure}
+
+Looking at the Tsukuba test results on figure \vref{fig:tsuall} the FCV result seems better than the EEPSM result. FCV seems more smooth while EEPSM have a lot small areas with false matching. Both have a lot of vertical lines with false matching. Near the left border the errors from border occlusions is seen. These errors are worse in EEPSM compared to FCV.
+
+Looking at the Cones test results on figure \vref{fig:conall} the FCV result seems more smooth than  the EEPSM result. The EEPSM is mostly smooth but noise is introduced in occluded areas. It is also noted that FCV doesn't handle the objects to right in the front whereas EEPSM have fewer false stere matches.
 
 \section{Theoretical Complexity}
 The simulations of the algorithms have to many unknown factors which can affect the performance e.g. the programmers knowledge of the algorithms and programming skills. To ensure a more precise?? estimation of the performance of the algorithms the theoretical complexity have been calculated. Table \vref{tb:theocompl} shows the number of addition, multiplications, divisions and comparisons used per pixel. It should be noted that the exponential function in the EEPSM algorithm have be approximated with a power series:
@@ -392,6 +396,7 @@ I/O communication can also have a significant influence on the performance hence
 \end{table}
 
 \section{Choosing an algorithm}
+Not done\\
 One of the algorithms described in this chapter should be chosen for further implementation on a FPGA. This choice is based on the results from section \vref{sec:simucomp}. Looking at table \ref{tab:runtime} it is seen that the Python implementation of the FCV algorithm has a far lower runtime than the EEPSM algorithm. The results might be misleading since the code for the FCV algorithm was inspired by an matlab example while the code for the EEPSM algorithm was written from the description.\\
 
 Looking at table \vref{tab:falseesti} it is seen that the FCV algorithm is much better at matching than the EEPSM algorithm.\\

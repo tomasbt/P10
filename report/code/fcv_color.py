@@ -206,7 +206,8 @@ if __name__ == '__main__' or True:
              'pip': ['data/usable/pipl.ppm', 'data/usable/pipr.ppm', 70],
              'vin': ['data/usable/vinl.ppm', 'data/usable/vinr.ppm', 135],
              'she': ['data/usable/shel.ppm', 'data/usable/sher.ppm', 50],
-             'roo': ['data/usable/rool.ppm', 'data/usable/roor.ppm', 75]}
+             'roo': ['data/usable/rool.ppm', 'data/usable/roor.ppm', 75],
+             'adi': ['data/usable/adil.ppm', 'data/usable/adir.ppm', 65]}
 
     # set constants
     image = 'vin'
