@@ -4,6 +4,8 @@ import numpy as np
 import time
 from matplotlib import pyplot as plt
 import sys
+import cv2
+from scipy import signal
 
 
 def readcolorppm(filename):
@@ -228,50 +230,32 @@ if __name__ == "main" or True:
     fdict = {'con': ['data/usable/conl.ppm', 'data/usable/conr.ppm', 59],
              'conf': ['data/usable/conlf.ppm', 'data/usable/conrf.ppm', 236],
              'ted': ['data/usable/tedl.ppm', 'data/usable/tedr.ppm', 59],
-             'ted2': ['data/usable/ted2l.ppm', 'data/usable/ted2r.ppm', 59],
              'tedf': ['data/usable/tedlf.ppm', 'data/usable/tedrf.ppm', 236],
              'mot': ['data/usable/motl.ppm', 'data/usable/motr.ppm', 70],
-             'tsu': ['data/usable/tsul.ppm', 'data/usable/tsur.ppm', 30],
-             'nku': ['data/usable/nkul.ppm', 'data/usable/nkur.ppm', 130],
-             'ven': ['data/usable/venl.ppm', 'data/usable/venr.ppm', 32],
-             'art': ['data/usable/artl.ppm', 'data/usable/artr.ppm', 70],
-             'pla': ['data/usable/plal.ppm', 'data/usable/plar.ppm', 154],
-             'pip': ['data/usable/pipl.ppm', 'data/usable/pipr.ppm', 70],
-             'vin': ['data/usable/vinl.ppm', 'data/usable/vinr.ppm', 135],
-             'she': ['data/usable/shel.ppm', 'data/usable/sher.ppm', 50],
-             'roo': ['data/usable/rool.ppm', 'data/usable/roor.ppm', 75],
-             'adi': ['data/usable/adil.ppm', 'data/usable/adir.ppm', 65]}
+             'tsu': ['data/usable/tsul.ppm', 'data/usable/tsur.ppm', 30],}
 
     # set constants
-    image = 'art'  # decide which stereo pair will be used.
+    image = 'mot'  # decide which stereo pair will be used.
 
-    lim = 2
-    al = 0.5
-    cr = 2
-    cen_norm = 8 if cr == 1 else 24
-    sig = 25
-    maxDisp = fdict[image][2]
-    consistancy_check = True
-    tB = 3.0 / 255.0
-    tCo = 7.0 / 255.0
-    tCe = 2.0 / 255.0
+    lim = 2  # limit used for consistancy check
+    al = 0.4  # Weight for sad or census cost
+    cr = 1  # Window radius for census transform. either 1 or 2
+    cen_norm = 8 if cr == 1 else 24  # Value used for normalise census cost
+    sig = 38.1  # Sigma value / Smoothing factor for permeability weights
+    maxDisp = fdict[image][2]  # maximum disparity value in the
+    # scene
+    consistancy_check = True  # whether consistancy check should be preformed
+    tB = 3.0 / 255.0  # Threshold value for border area
 
-    fnamel = fdict[image][0]
-    fnamer = fdict[image][1]
+    fnamel = fdict[image][0]  # Path to left image
+    fnamer = fdict[image][1]  # Path to right image
 
     # load images and normalise the data
-    Limg = readcolorppm(fnamel)  # /255.0  # Left image
-    Rimg = readcolorppm(fnamer)  # /255.0  # Right image
-    LimgG = rgb2gray(Limg)            # Left image grayscale
-    RimgG = rgb2gray(Rimg)            # Right image grayscale
+    Limg = readcolorppm(fnamel)  # Left image
+    Rimg = readcolorppm(fnamer)  # Right image
 
-    timefactor = 29360
-    print 'Resolution:', Limg.shape[1], 'x', Limg.shape[0], '=', LimgG.size, \
-        'pixels'
-    print 'Max Disparity:', maxDisp
-    print 'Total time guessed:', LimgG.size * maxDisp / timefactor, 'sec'
-    print 'Expected done at', time.strftime("%H:%M.", time.localtime(
-        time.time() + LimgG.size * maxDisp / timefactor))
+    LimgG = rgb2gray(Limg)  # Left image grayscale
+    RimgG = rgb2gray(Rimg)  # Right image grayscale
 
     # mirrored along the x-axis versions
     Limg_m = Limg[:, ::-1]   # Left image mirrored
@@ -300,41 +284,48 @@ if __name__ == "main" or True:
     # Calculate initial cost
     for d in range(maxDisp):
         # calculate SAD
-        tmp = np.ones((m, n, c)) * tB
-        tmp[:, d:n, :] = Rimg[:, 0:n - d, :]
-        c_color = np.abs(tmp - Limg) * 0.333333
-        c_color = np.sum(c_color, 2)
-        c_color = c_color / np.max(c_color)
+        tmp = np.ones((m, n, c)) * tB  # Generate temp. var. for shifted right
+        # image values
+        tmp[:, d:n, :] = Rimg[:, 0:n - d, :]  # Shift right image values to the
+        # left depending on the current disparity value.
+        c_color = np.abs(tmp - Limg) * 0.333333  # Calculate diff.
+        c_color = np.sum(c_color, 2)  # Sum diff
+        c_color = c_color / np.max(c_color)  # Normalise values
 
         # calculate census transform
-        tmp = np.ones((m, n), dtype='uint8')
-        tmp[:, d:n] = Rcen[:, 0:n - d]
-        c_cen = hamming_dist(Lcen, tmp) / cen_norm
+        tmp = np.ones((m, n), dtype='uint8')  # Generate temp. var for
+        # shifted right image census values
+        tmp[:, d:n] = Rcen[:, 0:n - d]  # Shift values by the current disparity
+        c_cen = hamming_dist(Lcen, tmp) / cen_norm  # Normalise values
 
         # calculate total cost
-        c_tot = al * c_color + (1 - al) * c_cen
+        c_tot = al * c_color + (1 - al) * c_cen  # Combine costs
 
         # do the same for the other view
-        # SAD
-        tmp_m = np.ones((m, n, c)) * tB
-        tmp_m[:, d:n] = Limg_m[:, 0:n - d]
-        c_color_m = np.abs(tmp_m - Rimg_m) * 0.333333
-        c_color_m = np.sum(c_color_m, 2)
-        c_color_m = c_color_m / np.max(c_color_m)
+        # calculate SAD
+        tmp_m = np.ones((m, n, c)) * tB  # Generate temp. var. for shifted
+        # right image values
+        tmp_m[:, d:n] = Limg_m[:, 0:n - d]  # Shift left image values depending
+        # on the current disparity value.
+        c_color_m = np.abs(tmp_m - Rimg_m) * 0.333333  # Calculate diff.
+        c_color_m = np.sum(c_color_m, 2)  # Sum diff.
+        c_color_m = c_color_m / np.max(c_color_m)  # Normalise values
 
         # census transform
-        tmp_m = np.ones((m, n), dtype='uint8')
-        tmp_m[:, d:n] = Lcen_m[:, 0:n - d]
-        c_cen_m = hamming_dist(Rcen_m, tmp_m) / cen_norm
+        tmp_m = np.ones((m, n), dtype='uint8')  # Generate temp. var for
+        # shifted left image census values
+        tmp_m[:, d:n] = Lcen_m[:, 0:n - d]  # Shift values by the current
+        # disparity
+        c_cen_m = hamming_dist(Rcen_m, tmp_m) / cen_norm  # Normalise values
 
         # total
-        c_tot_m = al * c_color_m + (1 - al) * c_cen_m
+        c_tot_m = al * c_color_m + (1 - al) * c_cen_m  # Combine costs
 
         # set values
         dispCost[:, :, d] = c_tot
-        dispCost_m[:, :, d] = c_tot_m[:, ::-1]
+        dispCost_m[:, :, d] = c_tot_m
 
-    print "new cost takes", time.time() - start, "seconds"
+    # print "new cost takes", time.time() - start, "seconds"
 
     costMat = dispCost
     costMat_m = dispCost_m
@@ -488,6 +479,8 @@ if __name__ == "main" or True:
             for d in range(maxDisp):
                 total_aggre[y, :, d] = aggre_T[y, :, d] + aggre_B[y, :, d]
 
+        total_aggre = total_aggre[:, ::-1, :]
+
         # generate disparity map
         dispmap2 = np.zeros(RimgG.shape)
         for y in range(Limg.shape[0]):
@@ -506,16 +499,18 @@ if __name__ == "main" or True:
         # fill occluded points - nda
         dispmap_final_filled = 1 * dispmap_final
         for y in range(m):
-            for x in range(n):
+            for x in range(maxDisp, n):
                 if dispmap_final_filled[y, x] <= 0:
                     dispmap_final_filled[y, x] = dispmap_final_filled[y, x - 1]
         for y in range(m):  # bord
-            for x in range(maxDisp, 0, -1):
+            for x in range(maxDisp + 10, 0, -1):
                 if dispmap_final_filled[y, x] <= 0:
                     dispmap_final_filled[y, x] = dispmap_final_filled[y, x + 1]
 
     print 'It took', time.time() - start
-
+    # test
+    dispmap_final_filled[0] = dispmap_final_filled[1]
+    dispmap_final_filled[-1] = dispmap_final_filled[-2]
     # # save the out as .png for the report
     plt.figure()
     fstr = 'data/res/' + image + '_cr' + str(cr) + '_s' + str(sig) + '_al' + \
@@ -525,18 +520,12 @@ if __name__ == "main" or True:
 
     plt.close()
 
-    plt.figure()
-    plt.imshow(dispmap, cmap=plt.cm.gray)
-
     if consistancy_check:
-        plt.figure()
-        plt.imshow(dispmap2, cmap=plt.cm.gray)
-
         plt.figure()
         plt.imshow(dispmap_final_filled, cmap=plt.cm.gray)
 
     # save the ouput as .pfm if pfm files exist for the images
-    imgList = ['mot', 'ted2', 'roo', 'she', 'vin', 'pip', 'pla', 'art']
+    imgList = ['mot', 'ted']
     if any(image in s for s in imgList):
         fstr = 'data/res/' + image + '_eepsm.pfm'
         file = open(fstr, 'wb')

@@ -34,7 +34,7 @@ if __name__ == 'main' or True:
     # calculate the focal length
     fH = distRange[1] * pixelSize[0] * resolution[0] / sceneSize[0]
     fV = distRange[1] * pixelSize[1] * resolution[1] / sceneSize[1]
-    focalLength = np.min([fH, fV])
+    focalLength = 7.82  # np.min([fH, fV])
 
     print 'Horizontal focal length', fH, 'Vertical focal length', fV, \
         'Chosen focal length', focalLength

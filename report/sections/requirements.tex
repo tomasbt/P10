@@ -3,12 +3,12 @@ This chapter elaborates on the requirements for the system and derives a test sp
 
 A way to identify the performance of a design using different design metrics is the cost function. The cost function specifies the overall cost of a design and is a function of the different design metrics:
 \begin{equation}
-C = f(A,T,P,N,test) = a_1\cdot A + a_2 \cdot T + a_3 \cdot P + a_4 \cdot N + a_5 \cdot S
+C = f(A,T,P,N,S) = a_1\cdot A + a_2 \cdot T + a_3 \cdot P + a_4 \cdot N + a_5 \cdot S
 \end{equation}
 where $A$ is area, $T$ is time, $P$ is power, $N$ is numerical properties, $S$ is the stereo matching result from Middlebury test and $a_i$ tells the importance of the associated metric.\\
 It is the task of the system designer to minimize this cost. And due to $a_i$ the cost function can be changed to fit the priorities of the application.\\
 
-For this thesis, the number one priority is the time metric since it is required that the algorithm should be executable in real-time. The stereo matching metric is also important since it describes the quality of the resulting disparity map i.e. the number false disparity values. Numerical properties are 3rd most important metric since this can affect the result from the algorithm since the cost value may have added noise. Area is not as important because if the target FPGA is too small then HSA Systems will use a larger FPGA but larger area often equals more expensive hardware. Power isn't important either since the stereo setup is intended being a part of industrial systems hence power is easily accessible.\\
+For this thesis, the number one priority is the time metric since it is required that the algorithm should be executable in real-time. The stereo matching metric is also important since it describes the quality of the resulting disparity map i.e. the number false disparity values. Numerical properties are 3rd most important metric since this can affect the result from the algorithm since the cost value may have added noise. Area is not as important because if the target FPGA is too small then HSA Systems will use a larger FPGA but larger area often equals more expensive hardware. Power is not important either since the stereo setup is intended as a part of industrial systems hence power is easily accessible.\\
 
 An ordered list of priorities for the design metrics in this project:
 \begin{multicols}{2}
@@ -21,10 +21,10 @@ An ordered list of priorities for the design metrics in this project:
   \end{enumerate}
 \end{multicols}
 
-In this thesis, the cost function will be used when choosing e.g when comparing the different algorithms found in chapter \vref{ch:alganalysis}.
+In this thesis, the cost function will be used when e.g comparing the different algorithms found in chapter \vref{ch:alganalysis}.
 
 \section{Requirement specification}
-This section will contain a table with the requirements for the system. Each parameter will be given a number, a value which should be met, the unit for the value, additional information for the requirement and a reference to where discussion for the requirement can be found.
+This section will contain a table with the requirements for the system. Each parameter will be given a number, a value which should be met, the unit for the value, additional information for the requirement and a reference to where the discussion for the requirement can be found.
 \begin{table}[ht!]
   \centering
   \begin{tabular}{l m{2cm} c c m{5cm} m{1.9cm}}
@@ -51,10 +51,10 @@ This section will contain a table with the requirements for the system. Each par
 \section{Test specification}
 This section will describe how the system can be tested in order to ensure that the requirements are fulfilled. \\
 
-Requirement 1: frame rate can be tested by running the finalized implementation and measure the run time which then should be \SI{\leq 100}{\milli\second}. \\
+Requirement 1: frame rate can be tested by running the finalized implementation and measure the runtime which should be \SI{\leq 100}{\milli\second}. \\
 
 Requirement 2: disparity precision. This requirement can be tested if a working stereo camera setup is developed. \\
-HSA Systems has produced a depth precision test object with small depth differences. The object is shown on figure \vref{fig:3dpreobj}. The object consists of five sets of steps with each stair having different depth increment. Looking at \vref{fig:3dpretestpic} the set of steps in the bottom have a depth difference of \SI{5}{\milli\meter} between each step. The set of steps just above have a depth difference of \SI{4}{\milli\meter} between each step. This pattern continues and results in the top set of steps to have a depth difference of \SI{1}{\milli\meter}. The small shapes in the middle of each steps have a depth difference of \SI{0.5}{\milli\meter} alternately protrude from or recess into the steps.\\
+HSA Systems has produced a depth precision test object with small depth differences. The object is shown on figure \vref{fig:3dpreobj}. The object consists of five sets of steps with each stair having different depth increment. Looking at \vref{fig:3dpretestpic} the set of steps at the bottom have a depth difference of \SI{5}{\milli\meter} between each step. The set of steps just above have a depth difference of \SI{4}{\milli\meter} between each step. This pattern continues and results in the top set of steps to have a depth difference of \SI{1}{\milli\meter}. The small shapes in the middle of each step have a depth difference of \SI{0.5}{\milli\meter} alternately protrude from or recess into the steps.\\
 
 \begin{figure}[ht]
   \centering
@@ -68,11 +68,11 @@ HSA Systems has produced a depth precision test object with small depth differen
     \caption{Picture of 3D printed depth precision test object}
     \label{fig:3dpretestpic}
   \end{subfigure}
-  \caption{Depth precisison test object \label{fig:3dpreobj}}
+  \caption{Depth precision test object \label{fig:3dpreobj}}
 \end{figure}
-Placing this object at a specific distance the depth precision can be tested. If the steps in lowest set of steps can be distinguish from each other in the disparity map then the depth precision is \SI{\leq 5}{\milli\meter}.\\
+Placing this object at a specific distance the depth precision can be tested. If the steps in lowest set of steps can be distinguished from each other in the disparity map then the depth precision is \SI{\leq 5}{\milli\meter}.\\
 If the implementation can distinguish between the lowest set of steps and the object is placed at \SI{1.5}{\meter} from the camera setup then the requirement is fulfilled. The rest of the steps help determine if the camera have a better precision than required.\\
-The middlebury test set does not contain images where specific areas contain depth increments of 2 mm and therefore these images can not be used for testing this requirement and calculations \vref{sec:disppre} are used instead.\\
+The Middlebury test set does not contain images where specific areas contain depth increments of 2 mm and therefore these images can not be used for testing this requirement and calculations \vref{sec:disppre} are used instead.\\
 
 Requirement 3: camera resolution is fulfilled by choosing the correct camera hardware but is essential to be fulfilled for requirement 2 to be fulfilled.\\
 

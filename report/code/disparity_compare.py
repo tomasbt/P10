@@ -44,7 +44,7 @@ def load_pfm(file):
 
 if __name__ == 'main' or True:
 
-    image = 'roo'
+    image = 'mot'
     alg = 'eepsm'
 
     fstr = 'data/' + image + '_GT.pfm'
@@ -65,6 +65,8 @@ if __name__ == 'main' or True:
         print 'same shape'
     else:
         print 'SHAPE NOT EQUAL'
+        print 'GT = ', img.shape
+        print 'EST = ', img2.shape
 
     Diff = 0
     numbofwrongpixels = 0

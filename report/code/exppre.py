@@ -67,7 +67,7 @@ if __name__ == '__main__' or True:
 
     plt.close("all")
     L = 6
-    sig = 25.0
+    sig = 38.1
     inputs = -np.arange(256) / sig  # 255.0 / sig
     # print inputs
 
@@ -79,7 +79,7 @@ if __name__ == '__main__' or True:
     L = np.arange(1, 51)
     # print L.shape, data.shape, inputs.shape
     maxVal = 1
-    maxVal2 = 1.01
+    maxVal2 = 1  # 1.01
     for l in range(50):
         for x in range(len(inputs)):
             if np.abs(myExp(inputs[x], l) - np.exp(inputs[x])) < maxVal:
@@ -112,12 +112,11 @@ if __name__ == '__main__' or True:
     Iv, Lv = np.meshgrid(inputs, L)
 
     Z = data  # np.log10(data)
-    surf = ax.plot_surface(Lv, Iv, Z, rstride=2, cstride=2,
-                           cmap=cm.coolwarm, linewidth=0.5, antialiased=True)
+    surf = ax.plot_wireframe(Lv, Iv, Z, rstride=5, cstride=15)
 
     ax.set_zlim(0, maxVal)
     ax.set_xlabel('Number of terms')
-    ax.set_ylabel('x in exp(x)')
+    ax.set_ylabel('x value')
     ax.set_zlabel('Error')
     ax.view_init(40, 45)
     fstr = 'data/exp_err_surf.png'
@@ -130,7 +129,7 @@ if __name__ == '__main__' or True:
 
     ax.set_zlim(0, maxVal)
     ax.set_xlabel('Number of terms')
-    ax.set_ylabel('x in exp(x)')
+    ax.set_ylabel('x value')
     ax.set_zlabel('Error')
     ax.view_init(30, 90)
     fstr = 'data/exp_err_wire.png'
@@ -139,15 +138,16 @@ if __name__ == '__main__' or True:
     # figure 3 ----------------------------------------------------------------
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.plot_wireframe(Lv, Iv, realExp, rstride=5, cstride=15, label='Numpy')
     ax.plot_wireframe(Lv, Iv, mExp, rstride=1, cstride=10, color="red",
-                      label='Estimate')
+                      label='Approximation')
+    ax.plot_wireframe(Lv, Iv, realExp, rstride=5,
+                      cstride=15, label='Exponential')
 
     ax.set_zlim(-maxVal2, maxVal2)
     ax.set_ylim(inputs[255], 0)
     ax.view_init(30, -45)
     ax.set_xlabel('Number of terms')
-    ax.set_ylabel('x in exp(x)')
+    ax.set_ylabel('x value')
     ax.set_zlabel('exp(x)')
     plt.legend()
     fstr = 'data/exp_val_wire_1.png'

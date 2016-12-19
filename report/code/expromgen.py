@@ -15,8 +15,8 @@ def convFixToStr(val, q=7):
 
 if __name__ == '__main__' or True:
     n = 256
-    sz = 15
-    sig = 25.0
+    sz = 11
+    sig = 38.1
     s = '   type ROM_Array is array (0 to ' + str(n - 1) + ')'
     print s
     s = '       of std_logic_vector (' + str(sz - 1) + ' downto 0);'
@@ -24,12 +24,17 @@ if __name__ == '__main__' or True:
     print ''
 
     print '   constant Content: ROM_Array := ('
-    for i in range(n-1):
+    strVal = '0'
+    for i in range(sz-1):
+        strVal = strVal + '1'
+    i = 0
+    print '       ' + str(i) + ' => "' + strVal + '",'
+    for i in range(1, n - 1):
         expVal = np.exp(-i / sig)
-        tmp = int(expVal * 2**(sz - 1)) / 2.0**(sz - 1)
+        tmp = int(expVal * 2.0**(sz - 1)) / 2.0**(sz - 1)
         strVal = convFixToStr(int(expVal * 2**(sz - 1)), q=sz - 1)
         print '       ' + str(i) + ' => "' + strVal + '",'
-    print '       OTHERS => "'+convFixToStr(0, q=sz - 1)+'"'
+    print '       OTHERS => "' + convFixToStr(0, q=sz - 1) + '"'
     print '       );'
     print '\n--------------\n'
     # after begin
@@ -39,13 +44,13 @@ if __name__ == '__main__' or True:
     tmpstr = ''
     for i in range(sz):
         tmpstr = tmpstr + 'Z'
-    print '           Data_out <= "'+tmpstr+'";'
+    print '           Data_out <= "' + tmpstr + '";'
     print '       elsif( Clock\'event and Clock = \'1\' ) then'
     print '           if Enable = \'1\' then'
     print '               if( Read = \'1\' ) then'
     print '                   Data_out <= Content(conv_integer(Address));'
     print '               else'
-    print '                   Data_out <= "'+tmpstr+'";'
+    print '                   Data_out <= "' + tmpstr + '";'
     print '               end if;'
     print '           end if;'
     print '       end if;'
